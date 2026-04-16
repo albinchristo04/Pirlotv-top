@@ -16,11 +16,24 @@ const servers = [1, 2, 3, 4];
     src={`${PLAYER_BASE_URL}/1/${firstCh}`}
     allowfullscreen
     allow="autoplay; fullscreen"
-    sandbox="allow-scripts allow-same-origin allow-presentation"
     loading="lazy"
     title={`${m.team1} vs ${m.team2} en vivo`}
   ></iframe>
+  <!-- Invisible overlay to catch the first popup ad click -->
+  <div class="adblock-overlay" id="adblock-overlay" title="Haz clic para iniciar el reproductor"></div>
 </div>
+
+<style>
+  .adblock-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    cursor: pointer;
+  }
+</style>
 
 <div class="player-controls">
   {langs.length > 0 && (
@@ -80,6 +93,10 @@ const servers = [1, 2, 3, 4];
   function updatePlayer() {
     const iframe = document.getElementById('player-iframe');
     if (iframe) iframe.src = `${PLAYER_BASE_URL}/${activeSrv}/${activeCh}`;
+    
+    // Reset the adblock overlay when channel changes (they often spawn new popup triggers)
+    const overlay = document.getElementById('adblock-overlay');
+    if (overlay) overlay.style.display = 'block';
   }
 
   function setActive(container, attr, val) {
@@ -93,7 +110,6 @@ const servers = [1, 2, 3, 4];
     const btn = e.target.closest('.ctrl-btn[data-lang]');
     if (!btn) return;
     activeLang = btn.dataset.lang;
-    // Pick first channel of that lang
     const ch = channels.find((c) => c.lang === activeLang);
     if (ch) {
       activeCh = ch.id;
@@ -120,4 +136,22 @@ const servers = [1, 2, 3, 4];
     setActive(document.getElementById('srv-btns'), 'srv', activeSrv);
     updatePlayer();
   });
+  
+  // -- Anti-Popup AdBlocker Logic --
+  // 1. Intercept the first literal click over the iframe
+  const overlay = document.getElementById('adblock-overlay');
+  if (overlay) {
+    overlay.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      overlay.style.display = 'none';
+      console.log('Intercepted and blocked invisible popup layer');
+    });
+  }
+  
+  // 2. Override window.open as a fallback to prevent the parent frame from being hijacked
+  window.open = function() {
+    console.log('Blocked window.open attempt by ad script');
+    return null;
+  };
 </script>
