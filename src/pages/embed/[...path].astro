@@ -48,11 +48,31 @@ const targetUrl = `https://pooembed.eu/embed/${path}`;
         allow="autoplay; fullscreen"
     ></iframe>
     <script>
+        // Advanced Multi-Layer Popup Guard
         let clickCount = 0;
+        const MAX_CLICKS = 5;
+
+        (function() {
+            const dummy = () => {};
+            const protect = () => {
+                try {
+                    window.open = dummy;
+                    window.alert = dummy;
+                    window.confirm = dummy;
+                    window.prompt = dummy;
+                } catch (e) {}
+            };
+            protect();
+            setInterval(protect, 500); // Re-enforce every 500ms
+        })();
+
         const catcher = document.getElementById('click-catcher');
-        catcher.onclick = function() {
+        catcher.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
             clickCount++;
-            if (clickCount >= 5) {
+            if (clickCount >= MAX_CLICKS) {
                 this.style.display = 'none';
             }
         };

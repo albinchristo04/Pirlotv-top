@@ -105,14 +105,32 @@ const servers = [1, 2, 3, 4];
   let activeCh   = channels[0]?.id ?? '';
   let activeSrv  = 1;
 
-  // Click-catcher logic to "swallow" 5 popup clicks
+  // Advanced Multi-Layer Popup Guard
   let clickCount = 0;
   const MAX_CLICKS = 5;
+
+  (function() {
+    const dummy = () => {};
+    const protect = () => {
+      try {
+        window.open = dummy;
+        window.alert = dummy;
+        window.confirm = dummy;
+        window.prompt = dummy;
+      } catch (e) {}
+    };
+    protect();
+    setInterval(protect, 500); // Re-enforce every 500ms
+  })();
 
   function initCatcher() {
     const catcher = document.getElementById('click-catcher');
     if (catcher) {
-      catcher.onclick = () => {
+      catcher.onclick = (e) => {
+        // Stop the click from propagating to the iframe early
+        e.preventDefault();
+        e.stopPropagation();
+        
         clickCount++;
         if (clickCount >= MAX_CLICKS) {
           catcher.style.display = 'none';
@@ -128,7 +146,7 @@ const servers = [1, 2, 3, 4];
     const catcher = document.getElementById('click-catcher');
     if (!iframe) return;
 
-    // Reset catcher and counter when changing streams
+    // Reset everything when changing streams
     clickCount = 0;
     if (catcher) catcher.style.display = 'block';
 

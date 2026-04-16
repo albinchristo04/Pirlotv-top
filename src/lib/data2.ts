@@ -63,6 +63,7 @@ export async function getMatches2(): Promise<Match[]> {
 
       processed.push({
         id: ev.id,
+        name: ev.name || `${team1} vs ${team2}`,
         team1,
         team2,
         league: leagueName,

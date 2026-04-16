@@ -7,6 +7,7 @@ export interface Channel {
 
 export interface RawMatch {
   id: string | number;
+  name: string;
   team1: string;
   team2: string;
   league: string;

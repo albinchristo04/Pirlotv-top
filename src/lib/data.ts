@@ -51,6 +51,7 @@ export async function getMatches(): Promise<Match[]> {
     };
     return {
       ...m,
+      name: m.name ?? `${m.team1} vs ${m.team2}`,
       time: timeUTC,
       slug: matchSlug(m.team1, m.team2),
       sportSlug: info.sportSlug,
