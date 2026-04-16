@@ -66,9 +66,15 @@ export async function getMatches2(): Promise<Match[]> {
         league: leagueName,
         time: timeUTC,
         date: dateObj.toISOString(),
-        // Map the new source's ID, locale, and iframe URL (proxied through our domain)
-        const localIframe = ev.iframe ? ev.iframe.replace('https://pooembed.eu/', `https://pirlo-tv.top/`) : '';
-        
+      const localIframe = ev.iframe ? ev.iframe.replace('https://pooembed.eu/', 'https://pirlo-tv.top/') : '';
+
+      processed.push({
+        id: ev.id,
+        team1,
+        team2,
+        league: leagueName,
+        time: timeUTC,
+        date: dateObj.toISOString(),
         channels: [
           { 
             id: ev.id, 
