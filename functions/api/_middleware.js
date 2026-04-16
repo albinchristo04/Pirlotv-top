@@ -18,11 +18,6 @@ export async function onRequest(context) {
     });
   }
 
-  // If the key matches perfectly, let Cloudflare serve the static matches.json
-  const response = await context.next();
-  
-  // Clone the response to add CORS headers just in case
-  const modifiedResponse = new Response(response.body, response);
-  modifiedResponse.headers.set("Access-Control-Allow-Origin", "*");
-  return modifiedResponse;
+  // If the key matches perfectly, let Cloudflare serve the request
+  return await context.next();
 }
