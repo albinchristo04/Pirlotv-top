@@ -66,9 +66,13 @@ export async function getMatches2(): Promise<Match[]> {
         league: leagueName,
         time: timeUTC,
         date: dateObj.toISOString(),
-        // Map the new source's ID and locale to the channels format we expect
+        // Map the new source's ID, locale, and iframe URL to the channels format
         channels: [
-          { id: ev.id, lang: ev.locale || 'es' }
+          { 
+            id: ev.id, 
+            lang: ev.locale || 'en',
+            url: ev.iframe
+          }
         ],
         slug: matchSlug(team1, team2) + `-${ev.id}`, // ensure unique slug
         sportSlug: info.sportSlug,

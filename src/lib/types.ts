@@ -2,6 +2,7 @@
 export interface Channel {
   id: string | number;
   lang: string;
+  url?: string;
 }
 
 export interface RawMatch {

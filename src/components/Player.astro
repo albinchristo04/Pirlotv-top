@@ -7,13 +7,14 @@ interface Props { match: Match; }
 const { match: m } = Astro.props;
 
 const langs = [...new Set(m.channels.map((c) => c.lang))];
-const firstCh = m.channels[0]?.id ?? '';
+const firstChannel = m.channels[0];
+const initialSrc = firstChannel?.url || `${PLAYER_BASE_URL}/1/${firstChannel?.id ?? ''}`;
 const servers = [1, 2, 3, 4];
 ---
 <div class="player-wrapper" id="player-wrapper">
   <iframe
     id="player-iframe"
-    src={`${PLAYER_BASE_URL}/1/${firstCh}`}
+    src={initialSrc}
     allowfullscreen
     allow="autoplay; fullscreen"
     sandbox="allow-scripts allow-same-origin allow-presentation"
@@ -56,7 +57,7 @@ const servers = [1, 2, 3, 4];
     </div>
   </div>
 
-  <div class="ctrl-group">
+  <div class="ctrl-group" id="srv-group" style={firstChannel?.url ? "display:none" : ""}>
     <span class="ctrl-label">🖥 Servidor</span>
     <div class="ctrl-btns" id="srv-btns">
       {servers.map((s, i) => (
@@ -79,7 +80,19 @@ const servers = [1, 2, 3, 4];
 
   function updatePlayer() {
     const iframe = document.getElementById('player-iframe');
-    if (iframe) iframe.src = `${PLAYER_BASE_URL}/${activeSrv}/${activeCh}`;
+    const srvGroup = document.getElementById('srv-group');
+    if (!iframe) return;
+
+    // Find the current channel object to see if it has a direct URL
+    const chObj = channels.find(c => c.id == activeCh && c.lang == activeLang) || channels.find(c => c.id == activeCh);
+    
+    if (chObj && chObj.url) {
+      iframe.src = chObj.url;
+      if (srvGroup) srvGroup.style.display = 'none';
+    } else {
+      iframe.src = `${PLAYER_BASE_URL}/${activeSrv}/${activeCh}`;
+      if (srvGroup) srvGroup.style.display = 'block';
+    }
   }
 
   function setActive(container, attr, val) {
