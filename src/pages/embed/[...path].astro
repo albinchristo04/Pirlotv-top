@@ -48,8 +48,13 @@ const targetUrl = `https://pooembed.eu/embed/${path}`;
         allow="autoplay; fullscreen"
     ></iframe>
     <script>
-        document.getElementById('click-catcher').onclick = function() {
-            this.style.display = 'none';
+        let clickCount = 0;
+        const catcher = document.getElementById('click-catcher');
+        catcher.onclick = function() {
+            clickCount++;
+            if (clickCount >= 5) {
+                this.style.display = 'none';
+            }
         };
     </script>
 </body>

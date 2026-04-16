@@ -105,14 +105,18 @@ const servers = [1, 2, 3, 4];
   let activeCh   = channels[0]?.id ?? '';
   let activeSrv  = 1;
 
-  // Click-catcher logic to "burn" the first popup click
+  // Click-catcher logic to "swallow" 5 popup clicks
+  let clickCount = 0;
+  const MAX_CLICKS = 5;
+
   function initCatcher() {
     const catcher = document.getElementById('click-catcher');
     if (catcher) {
       catcher.onclick = () => {
-        catcher.style.display = 'none';
-        // Re-enable catcher after a short delay if you want to catch more clicks
-        // but usually, one is enough to let the user hit the play button.
+        clickCount++;
+        if (clickCount >= MAX_CLICKS) {
+          catcher.style.display = 'none';
+        }
       };
     }
   }
@@ -124,7 +128,8 @@ const servers = [1, 2, 3, 4];
     const catcher = document.getElementById('click-catcher');
     if (!iframe) return;
 
-    // Reset catcher when changing streams
+    // Reset catcher and counter when changing streams
+    clickCount = 0;
     if (catcher) catcher.style.display = 'block';
 
     // Find the current channel object to see if it has a direct URL
