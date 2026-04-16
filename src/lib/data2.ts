@@ -59,13 +59,6 @@ export async function getMatches2(): Promise<Match[]> {
         leagueSlug: 'otros',
       };
 
-      processed.push({
-        id: ev.id,
-        team1,
-        team2,
-        league: leagueName,
-        time: timeUTC,
-        date: dateObj.toISOString(),
       const localIframe = ev.iframe ? ev.iframe.replace('https://pooembed.eu/', 'https://pirlo-tv.top/') : '';
 
       processed.push({
