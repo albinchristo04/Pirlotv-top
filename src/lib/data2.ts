@@ -66,12 +66,14 @@ export async function getMatches2(): Promise<Match[]> {
         league: leagueName,
         time: timeUTC,
         date: dateObj.toISOString(),
-        // Map the new source's ID, locale, and iframe URL to the channels format
+        // Map the new source's ID, locale, and iframe URL (proxied through our domain)
+        const localIframe = ev.iframe ? ev.iframe.replace('https://pooembed.eu/', `https://pirlo-tv.top/`) : '';
+        
         channels: [
           { 
             id: ev.id, 
             lang: ev.locale || 'en',
-            url: ev.iframe
+            url: localIframe
           }
         ],
         slug: matchSlug(team1, team2) + `-${ev.id}`, // ensure unique slug

@@ -1,0 +1,33 @@
+---
+// src/pages/embed/[...path].astro
+// Proxy page to embed external streams with strict sandboxing
+export const partial = true; // Optimization for Cloudflare if used as fragment, but here we want a full page
+
+const { path } = Astro.params;
+if (!path) return Astro.redirect('/404');
+
+// Reconstruct the external URL
+// Assuming the source is always pooembed.eu for this specific path
+const targetUrl = `https://pooembed.eu/embed/${path}`;
+---
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Stream Player</title>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+        iframe { border: 0; width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+    <iframe
+        src={targetUrl}
+        allowfullscreen
+        allow="autoplay; fullscreen"
+        sandbox="allow-scripts allow-same-origin allow-presentation"
+    ></iframe>
+</body>
+</html>
