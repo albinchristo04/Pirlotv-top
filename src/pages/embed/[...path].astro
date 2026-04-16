@@ -1,7 +1,24 @@
 ---
-// src/pages/embed/[...path].astro
-// Proxy page to embed external streams with strict sandboxing
-export const partial = true; // Optimization for Cloudflare if used as fragment, but here we want a full page
+import { getMatches2 } from '../../lib/data2';
+
+export async function getStaticPaths() {
+  const matches = await getMatches2();
+  const paths = new Set<string>();
+
+  matches.forEach(m => {
+    m.channels.forEach(ch => {
+      if (ch.url && ch.url.includes('/embed/')) {
+        // Extract the path after /embed/
+        const part = ch.url.split('/embed/')[1];
+        if (part) paths.add(part);
+      }
+    });
+  });
+
+  return Array.from(paths).map(path => ({
+    params: { path }
+  }));
+}
 
 const { path } = Astro.params;
 if (!path) return Astro.redirect('/404');
