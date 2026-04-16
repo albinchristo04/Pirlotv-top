@@ -1,0 +1,44 @@
+---
+// src/components/MatchList.astro
+import type { Match } from '../lib/types';
+import MatchCard from './MatchCard.astro';
+
+interface Props {
+  matches: Match[];
+  groupByLeague?: boolean;
+}
+
+const { matches, groupByLeague = true } = Astro.props;
+
+// Group by league
+const grouped = new Map<string, Match[]>();
+if (groupByLeague) {
+  for (const m of matches) {
+    if (!grouped.has(m.league)) grouped.set(m.league, []);
+    grouped.get(m.league)!.push(m);
+  }
+} else {
+  grouped.set('', matches);
+}
+---
+{matches.length === 0 ? (
+  <div class="empty">
+    <div class="empty__icon">📺</div>
+    <p>No hay partidos programados. Vuelve más tarde.</p>
+  </div>
+) : (
+  <>
+    {[...grouped.entries()].map(([league, leagueMatches]) => (
+      <>
+        {groupByLeague && league && (
+          <h2 class="section-title">{league}</h2>
+        )}
+        <div class="match-grid">
+          {leagueMatches.map((m) => (
+            <MatchCard match={m} />
+          ))}
+        </div>
+      </>
+    ))}
+  </>
+)}

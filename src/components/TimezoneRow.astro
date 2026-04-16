@@ -1,0 +1,17 @@
+---
+// src/components/TimezoneRow.astro
+interface Props { timezones: string; }
+const { timezones } = Astro.props;
+const parts = timezones.split(' · ');
+---
+{timezones && (
+  <div class="timezone-row" aria-label="Horarios por zona horaria">
+    🕐
+    {parts.map((part, i) => (
+      <>
+        <span>{part}</span>
+        {i < parts.length - 1 && <span aria-hidden="true">·</span>}
+      </>
+    ))}
+  </div>
+)}

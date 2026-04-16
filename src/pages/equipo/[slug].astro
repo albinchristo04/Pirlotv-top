@@ -1,0 +1,62 @@
+---
+// src/pages/equipo/[slug].astro
+import Base from '../../layouts/Base.astro';
+import MatchList from '../../components/MatchList.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import { getMatches } from '../../lib/data';
+import { toSlug } from '../../lib/slugs';
+import { SITE_URL } from '../../lib/config';
+
+export async function getStaticPaths() {
+  const KNOWN_TEAMS = [
+    'New York Yankees', 'Los Angeles Dodgers', 'San Diego Padres',
+    'Boston Red Sox', 'Houston Astros', 'Pittsburgh Pirates', 'Arizona Diamondbacks',
+  ];
+
+  const all = await getMatches();
+  const teamSet = new Map<string, string>();
+
+  // Add known teams
+  for (const t of KNOWN_TEAMS) teamSet.set(toSlug(t), t);
+  // Add all teams from live data
+  for (const m of all) {
+    teamSet.set(toSlug(m.team1), m.team1);
+    teamSet.set(toSlug(m.team2), m.team2);
+  }
+
+  return [...teamSet.entries()].map(([slug, name]) => ({
+    params: { slug },
+    props: { teamName: name, teamSlug: slug },
+  }));
+}
+
+const { teamName, teamSlug } = Astro.props;
+const allMatches = await getMatches();
+const matches = allMatches.filter(
+  (m) => toSlug(m.team1) === teamSlug || toSlug(m.team2) === teamSlug,
+);
+
+const canonical = `${SITE_URL}/equipo/${teamSlug}/`;
+const seo = {
+  title: `${teamName} En Vivo — Próximos Partidos · Pirlo TV | PirloTV`,
+  description: `Ver ${teamName} en vivo gratis en Pirlo TV. ${matches.length} partidos disponibles hoy. Pirlo TV ${teamName} · Roja Directa ${teamName}.`,
+  canonical,
+  ogTitle: `${teamName} En Vivo | Pirlo TV`,
+  ogDescription: `${matches.length} partidos de ${teamName} disponibles ahora gratis en Pirlo TV.`,
+};
+---
+<Base seo={seo}>
+  <Breadcrumb items={[
+    { label: 'MLB', href: '/mlb/' },
+    { label: teamName },
+  ]} />
+  <h1 class="hero__title" style="margin-bottom:0.5rem;"><span>{teamName}</span> en Vivo</h1>
+  <p style="color:#7a7a9a;font-size:0.9rem;margin-bottom:2rem;">
+    Ver {teamName} en vivo gratis en Pirlo TV. Pirlo TV {teamName} · Roja Directa {teamName} —
+    {matches.length} {matches.length === 1 ? 'partido' : 'partidos'} disponibles hoy.
+  </p>
+  {matches.length > 0
+    ? <MatchList matches={matches} groupByLeague={false} />
+    : <div class="empty"><div class="empty__icon">📅</div><p>No hay partidos de {teamName} programados hoy.</p></div>
+  }
+</Base>

@@ -1,0 +1,55 @@
+---
+// src/pages/mlb.astro
+import Base from '../layouts/Base.astro';
+import MatchList from '../components/MatchList.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import FaqBlock from '../components/FaqBlock.astro';
+import { getMatchesBySport } from '../lib/data';
+import { sportSeo, breadcrumbSchema } from '../lib/seo';
+import { SITE_URL } from '../lib/config';
+
+const matches = await getMatchesBySport('mlb');
+const seo = {
+  ...sportSeo('MLB', 'mlb', matches.length),
+  title: `MLB En Vivo — Béisbol en Directo Gratis · Pirlo TV MLB | PirloTV`,
+  description: `Hoy hay ${matches.length} partidos de béisbol MLB en vivo en Pirlo TV. Ver ${matches[0]?.team1 ?? 'Yankees'} a las ${matches[0]?.time ?? '21:00'} ET. Pirlo TV MLB · Roja Directa MLB · Tarjeta Roja MLB — todos los partidos gratis.`,
+};
+const schema = breadcrumbSchema([{ name: 'MLB', url: SITE_URL + '/mlb/' }]);
+
+const teams = [
+  { slug: 'new-york-yankees', name: 'New York Yankees' },
+  { slug: 'los-angeles-dodgers', name: 'Los Angeles Dodgers' },
+  { slug: 'san-diego-padres', name: 'San Diego Padres' },
+  { slug: 'boston-red-sox', name: 'Boston Red Sox' },
+  { slug: 'houston-astros', name: 'Houston Astros' },
+];
+
+const faqItems = [
+  { q: '¿Dónde ver MLB en vivo?', a: `Ver todas las Series de la Major League Baseball en directo gratis en Pirlo TV (pirlo-tv.top). Hoy hay ${matches.length} partidos disponibles.` },
+  { q: '¿Qué partidos de béisbol hay hoy?', a: matches.slice(0, 3).map((m) => `${m.team1} vs ${m.team2} a las ${m.time} UTC`).join(', ') + '. Todos disponibles gratis en Pirlo TV.' },
+  { q: '¿Cómo ver pirlo tv mlb?', a: 'Entra en pirlo-tv.top, busca la sección MLB y haz clic en el partido que quieres ver. Gratis, sin registro, con múltiples canales y servidores.' },
+];
+---
+<Base seo={seo} schema={schema}>
+  <Breadcrumb items={[{ label: '⚾ MLB' }]} />
+  <h1 class="hero__title" style="margin-bottom:0.5rem;">⚾ <span>Pirlo TV MLB</span> — Béisbol en Vivo</h1>
+  <p style="color:#7a7a9a;font-size:0.9rem;margin-bottom:1rem;">
+    Hoy hay {matches.length} partidos de béisbol MLB en vivo en Pirlo TV.
+    Pirlo TV MLB · Roja Directa MLB · Tarjeta Roja MLB — todos gratis.
+  </p>
+
+  <!-- Team Pages -->
+  <h2 class="section-title">Equipos MLB</h2>
+  <div class="match-grid" style="margin-bottom:1.5rem;">
+    {teams.map((t) => (
+      <a href={`/equipo/${t.slug}/`} class="match-card">
+        <div class="match-card__teams">{t.name}</div>
+        <div class="match-card__live" style="margin-top:0.25rem;">Ver partidos →</div>
+      </a>
+    ))}
+  </div>
+
+  <h2 class="section-title">Partidos de Hoy</h2>
+  <MatchList matches={matches} groupByLeague={false} />
+  <FaqBlock items={faqItems} />
+</Base>

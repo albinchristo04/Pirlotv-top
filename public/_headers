@@ -1,0 +1,23 @@
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cache-Control: public, max-age=10800
+
+/sitemap.xml
+  Cache-Control: public, max-age=3600
+
+/feed.xml
+  Cache-Control: public, max-age=3600
+
+/robots.txt
+  Cache-Control: public, max-age=86400
+
+/pirlo-tv/
+  Cache-Control: public, max-age=10800
+
+/tarjeta-roja/
+  Cache-Control: public, max-age=10800
+
+/roja-directa-pirlo-tv/
+  Cache-Control: public, max-age=10800

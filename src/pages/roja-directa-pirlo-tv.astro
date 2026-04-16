@@ -1,0 +1,47 @@
+---
+// src/pages/roja-directa-pirlo-tv.astro
+import Base from '../layouts/Base.astro';
+import MatchList from '../components/MatchList.astro';
+import FaqBlock from '../components/FaqBlock.astro';
+import { getMatches } from '../lib/data';
+import { brandPageSeo, breadcrumbSchema } from '../lib/seo';
+import { SITE_URL } from '../lib/config';
+
+const matches = await getMatches();
+const seo = brandPageSeo('Roja Directa Pirlo TV', 'roja-directa-pirlo-tv', matches.length);
+const schema = breadcrumbSchema([{ name: 'Roja Directa Pirlo TV', url: SITE_URL + '/roja-directa-pirlo-tv/' }]);
+
+const faqItems = [
+  { q: '¿Qué es Roja Directa Pirlo TV?', a: 'Roja Directa Pirlo TV combina los dos sitios de streaming deportivo más buscados en español. En pirlo-tv.top puedes acceder a todos los partidos que cubre tanto Roja Directa como Pirlo TV.' },
+  { q: '¿Roja directa pirlo — dónde ver?', a: `Ver roja directa pirlo tv en pirlo-tv.top. ${matches.length} partidos disponibles hoy gratis con múltiples canales y servidores.` },
+  { q: '¿Rojadirecta pirlo tv?', a: 'Rojadirecta y Pirlo TV son accesibles en pirlo-tv.top. Todos los partidos de roja directa pirlo tv disponibles gratis sin registro.' },
+];
+---
+<Base seo={seo} schema={schema}>
+  <div style="max-width:800px;margin:0 auto;">
+    <div class="hero" style="margin-bottom:2rem;">
+      <div class="hero__badges">
+        <span class="badge badge--live">● Roja Directa</span>
+        <span class="badge">Pirlo TV</span>
+        <span class="badge">roja directa pirlo</span>
+        <span class="badge">rojadirecta pirlo tv</span>
+      </div>
+      <h1 class="hero__title">🔴 <span>Roja Directa Pirlo TV</span> — Ver Partidos en Vivo</h1>
+      <p class="hero__sub">
+        Roja Directa Pirlo TV en pirlo-tv.top. {matches.length} partidos disponibles hoy gratis.
+        Roja Directa · Pirlo TV · Tarjeta Roja TV — todo en un solo lugar.
+      </p>
+    </div>
+
+    <p style="font-size:0.85rem;color:#7a7a9a;margin-bottom:1.5rem;">
+      Ver roja directa pirlo tv en vivo gratis. Rojadirecta pirlo tv — partidos de fútbol, béisbol MLB,
+      baloncesto NBA y más deportes en directo. También disponible como
+      <a href="/tarjeta-roja/" style="color:var(--accent)">Tarjeta Roja TV</a> y
+      <a href="/pirlo-tv/" style="color:var(--accent)">Pirlo TV</a>.
+    </p>
+
+    <h2 class="section-title">Partidos en Vivo Hoy</h2>
+    <MatchList matches={matches} groupByLeague={true} />
+    <FaqBlock items={faqItems} />
+  </div>
+</Base>

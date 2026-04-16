@@ -1,0 +1,54 @@
+---
+// src/pages/404.astro
+import Base from '../layouts/Base.astro';
+import { getMatches } from '../lib/data';
+import MatchCard from '../components/MatchCard.astro';
+
+const matches = (await getMatches()).slice(0, 6);
+const seo = {
+  title: 'Partido no encontrado — Pirlo TV | PirloTV',
+  description: 'Este partido ya terminó — pero hay más en vivo ahora en Pirlo TV. Ver deportes gratis.',
+  canonical: 'https://pirlo-tv.top/404/',
+  ogTitle: '404 — Pirlo TV',
+  ogDescription: 'Este partido ya terminó. Ver otros partidos en vivo ahora en Pirlo TV.',
+};
+---
+<Base seo={seo}>
+  <div style="text-align:center;padding:3rem 1rem 2rem;">
+    <div style="font-size:3rem;margin-bottom:1rem;">📺</div>
+    <h1 style="font-size:1.6rem;font-weight:800;margin-bottom:0.75rem;">
+      Este partido ya terminó
+    </h1>
+    <p style="color:#7a7a9a;margin-bottom:2rem;">
+      — pero hay más partidos en vivo ahora mismo en Pirlo TV
+    </p>
+    <a href="/" style="display:inline-block;background:var(--accent);color:#fff;padding:0.6rem 1.5rem;border-radius:8px;font-weight:700;margin-bottom:3rem;">
+      Ver partidos en vivo →
+    </a>
+  </div>
+
+  {matches.length > 0 && (
+    <>
+      <h2 class="section-title">Partidos en Vivo Ahora</h2>
+      <div class="match-grid">
+        {matches.map((m) => <MatchCard match={m} />)}
+      </div>
+    </>
+  )}
+
+  <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-top:2rem;">
+    {[
+      { href: '/futbol/', label: '⚽ Fútbol' },
+      { href: '/mlb/', label: '⚾ MLB' },
+      { href: '/nba/', label: '🏀 NBA' },
+      { href: '/pirlo-tv/', label: '⚡ Pirlo TV' },
+      { href: '/tarjeta-roja/', label: '🟥 Tarjeta Roja' },
+    ].map((link) => (
+      <a href={link.href} style="padding:0.4rem 0.9rem;border:1px solid var(--border);border-radius:8px;font-size:0.85rem;color:var(--muted);transition:color .15s,border-color .15s;"
+        onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'"
+        onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">
+        {link.label}
+      </a>
+    ))}
+  </div>
+</Base>

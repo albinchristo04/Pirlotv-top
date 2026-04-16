@@ -1,0 +1,25 @@
+---
+// src/pages/beisbol.astro
+import Base from '../layouts/Base.astro';
+import MatchList from '../components/MatchList.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { getMatchesBySport } from '../lib/data';
+import { sportSeo, breadcrumbSchema } from '../lib/seo';
+import { SITE_URL } from '../lib/config';
+
+const matches = await getMatchesBySport('mlb');
+const seo = {
+  ...sportSeo('Béisbol', 'beisbol', matches.length),
+  title: `Béisbol En Vivo — Pirlo TV Béisbol · MLB en Español | PirloTV`,
+  description: `Ver béisbol MLB en vivo en Pirlo TV. ${matches.length} partidos disponibles hoy. Roja Directa MLB · Tarjeta Roja MLB · Pirlo TV Béisbol en directo gratis.`,
+};
+const schema = breadcrumbSchema([{ name: 'Béisbol', url: SITE_URL + '/beisbol/' }]);
+---
+<Base seo={seo} schema={schema}>
+  <Breadcrumb items={[{ label: '⚾ Béisbol' }]} />
+  <h1 class="hero__title" style="margin-bottom:0.5rem;">⚾ <span>Béisbol</span> en Vivo — Pirlo TV</h1>
+  <p style="color:#7a7a9a;font-size:0.9rem;margin-bottom:2rem;">
+    Hoy hay {matches.length} partidos de béisbol MLB en vivo. Roja Directa MLB · Tarjeta Roja MLB · Pirlo TV Béisbol — todos los partidos de la Major League Baseball en directo gratis.
+  </p>
+  <MatchList matches={matches} groupByLeague={false} />
+</Base>

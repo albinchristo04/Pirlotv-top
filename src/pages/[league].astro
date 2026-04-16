@@ -1,0 +1,52 @@
+---
+// src/pages/[league].astro
+import Base from '../layouts/Base.astro';
+import MatchList from '../components/MatchList.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import FaqBlock from '../components/FaqBlock.astro';
+import { getMatches } from '../lib/data';
+import { leagueSeo, breadcrumbSchema } from '../lib/seo';
+import { SPORT_MAP, SITE_URL } from '../lib/config';
+
+export async function getStaticPaths() {
+  const matches = await getMatches();
+  const leagueSlugs = new Map<string, string>(); // slug → display name
+  for (const m of matches) {
+    if (!leagueSlugs.has(m.leagueSlug)) leagueSlugs.set(m.leagueSlug, m.league);
+  }
+  return [...leagueSlugs.entries()].map(([slug, name]) => ({
+    params: { league: slug },
+    props: { leagueName: name, leagueSlug: slug },
+  }));
+}
+
+const { leagueName, leagueSlug } = Astro.props;
+const allMatches = await getMatches();
+const matches = allMatches.filter((m) => m.leagueSlug === leagueSlug);
+const sportSlug = matches[0]?.sportSlug ?? 'deportes';
+const sportLabel = matches[0]?.sportLabel ?? 'Deportes';
+
+const seo = leagueSeo(leagueName, leagueSlug, matches.length);
+const schema = breadcrumbSchema([
+  { name: sportLabel, url: `${SITE_URL}/${sportSlug}/` },
+  { name: leagueName, url: `${SITE_URL}/${leagueSlug}/` },
+]);
+
+const faqItems = [
+  { q: `¿Dónde ver ${leagueName} en vivo?`, a: `Ver ${leagueName} en vivo gratis en Pirlo TV (pirlo-tv.top). Hoy hay ${matches.length} partidos disponibles.` },
+  { q: `¿Qué partidos hay hoy de ${leagueName}?`, a: matches.slice(0, 3).map((m) => `${m.team1} vs ${m.team2} a las ${m.time} UTC`).join(', ') + '. Todos disponibles en directo gratis en Pirlo TV.' },
+];
+---
+<Base seo={seo} schema={schema}>
+  <Breadcrumb items={[
+    { label: sportLabel, href: `/${sportSlug}/` },
+    { label: leagueName },
+  ]} />
+  <h1 class="hero__title" style="margin-bottom:0.5rem;"><span>{leagueName}</span> en Vivo</h1>
+  <p style="color:#7a7a9a;font-size:0.9rem;margin-bottom:2rem;">
+    {leagueName} en vivo en Pirlo TV. {matches.length} partidos hoy en directo gratis.
+    Múltiples canales en español, inglés y portugués. Pirlo TV · Roja Directa · Tarjeta Roja TV.
+  </p>
+  <MatchList matches={matches} groupByLeague={false} />
+  {faqItems.length > 0 && <FaqBlock items={faqItems} />}
+</Base>

@@ -1,0 +1,26 @@
+---
+// src/components/MatchCard.astro
+import type { Match } from '../lib/types';
+import { SITE_URL } from '../lib/config';
+
+interface Props {
+  match: Match;
+  prefix?: string; // 'partido' | 'ver' | 'en-vivo'
+}
+
+const { match: m, prefix = 'partido' } = Astro.props;
+const url = `/${prefix}/${m.slug}/`;
+---
+<a href={url} class="match-card" aria-label={`${m.team1} vs ${m.team2} en vivo`}>
+  <div class="match-card__league">{m.league}</div>
+  <div class="match-card__teams">
+    {m.team1}
+    <span class="match-card__vs">vs</span>
+    {m.team2}
+  </div>
+  <div class="match-card__meta">
+    <span class="match-card__time">🕐 {m.time} UTC</span>
+    <span class="match-card__ch">{m.channels.length} canales</span>
+  </div>
+  <div class="match-card__live">EN VIVO</div>
+</a>

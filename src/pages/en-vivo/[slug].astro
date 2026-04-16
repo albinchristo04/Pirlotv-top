@@ -1,0 +1,31 @@
+---
+// src/pages/en-vivo/[slug].astro
+// Alternate match URL — canonical points to /partido/
+import Base from '../../layouts/Base.astro';
+import { getMatches } from '../../lib/data';
+import { SITE_URL } from '../../lib/config';
+import { matchSeo } from '../../lib/seo';
+
+export async function getStaticPaths() {
+  const matches = await getMatches();
+  return matches.map((m) => ({
+    params: { slug: m.slug },
+    props: { match: m },
+  }));
+}
+
+const { match: m } = Astro.props;
+const canonical = `${SITE_URL}/partido/${m.slug}/`;
+const seo = {
+  ...matchSeo(m),
+  canonical,
+  title: `${m.team1} vs ${m.team2} En Vivo — ${m.league} | Pirlo TV`,
+};
+---
+<Base seo={seo}>
+  <link rel="canonical" href={canonical} slot="head" />
+  <meta http-equiv="refresh" content={`0; url=${canonical}`} slot="head" />
+  <p style="color:#7a7a9a;margin-top:4rem;text-align:center;">
+    Redirigiendo a <a href={canonical} style="color:var(--accent)">{canonical}</a>…
+  </p>
+</Base>

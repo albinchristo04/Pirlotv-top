@@ -1,0 +1,45 @@
+---
+// src/pages/tarjeta-roja.astro
+import Base from '../layouts/Base.astro';
+import MatchList from '../components/MatchList.astro';
+import FaqBlock from '../components/FaqBlock.astro';
+import { getMatches } from '../lib/data';
+import { brandPageSeo, breadcrumbSchema } from '../lib/seo';
+import { SITE_URL } from '../lib/config';
+
+const matches = await getMatches();
+const seo = brandPageSeo('Tarjeta Roja TV', 'tarjeta-roja', matches.length);
+const schema = breadcrumbSchema([{ name: 'Tarjeta Roja TV', url: SITE_URL + '/tarjeta-roja/' }]);
+
+const faqItems = [
+  { q: '¿Qué es Tarjeta Roja TV?', a: 'Tarjeta Roja TV es otro nombre para acceder a los mismos deportes en vivo disponibles en Pirlo TV. Aquí puedes ver todos los deportes disponibles hoy de forma gratuita.' },
+  { q: '¿Tarjeta Roja TV tiene MLB?', a: `Sí. Tarjeta Roja MLB ofrece ${matches.filter(m=>m.sportSlug==='mlb').length} partidos de béisbol hoy en directo gratis.` },
+  { q: '¿Tarjeta Roja Pirlo TV?', a: 'Tarjeta Roja TV y Pirlo TV son el mismo servicio. Accede desde /pirlo-tv/ o /tarjeta-roja/ — mismos partidos, mismos canales.' },
+];
+---
+<Base seo={seo} schema={schema}>
+  <div style="max-width:800px;margin:0 auto;">
+    <div class="hero" style="margin-bottom:2rem;">
+      <div class="hero__badges">
+        <span class="badge badge--live">● Tarjeta Roja TV</span>
+        <span class="badge">tarjeta roja en vivo</span>
+        <span class="badge">tarjeta roja pirlo</span>
+      </div>
+      <h1 class="hero__title">🟥 <span>Tarjeta Roja TV</span> en Vivo Gratis</h1>
+      <p class="hero__sub">
+        Tarjeta Roja TV es otro nombre para Pirlo TV. {matches.length} partidos disponibles hoy gratis.
+        Fútbol, MLB, NBA, NHL y más en directo.
+      </p>
+    </div>
+
+    <p style="font-size:0.85rem;color:#7a7a9a;margin-bottom:1.5rem;">
+      Tarjeta Roja TV en vivo gratis en Pirlo TV (pirlo-tv.top). Aquí puedes ver todos los deportes disponibles hoy.
+      También conocido como <a href="/pirlo-tv/" style="color:var(--accent)">Pirlo TV</a> y
+      <a href="/roja-directa-pirlo-tv/" style="color:var(--accent)">Roja Directa</a>.
+    </p>
+
+    <h2 class="section-title">Partidos en Vivo Hoy</h2>
+    <MatchList matches={matches} groupByLeague={true} />
+    <FaqBlock items={faqItems} />
+  </div>
+</Base>

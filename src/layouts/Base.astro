@@ -1,0 +1,121 @@
+---
+// src/layouts/Base.astro
+import '../styles/global.css';
+import type { SeoMeta } from '../lib/seo';
+import { SITE_NAME, SITE_URL } from '../lib/config';
+
+interface Props {
+  seo: SeoMeta;
+  schema?: object | object[];
+}
+
+const { seo, schema } = Astro.props;
+const schemaArray = schema ? (Array.isArray(schema) ? schema : [schema]) : [];
+const buildTime = new Date().toISOString();
+---
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{seo.title}</title>
+  <meta name="description" content={seo.description} />
+  <meta name="keywords" content="pirlo tv, pirlotv, pirlo tv en vivo, pirlo tv futbol en vivo, roja directa, roja directa en vivo, tarjeta roja tv, futbol en vivo, rojadirecta, pirlo.tv, pirlo tv online, pirlo tv gratis" />
+  <link rel="canonical" href={seo.canonical} />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content={SITE_NAME} />
+  <meta property="og:title" content={seo.ogTitle} />
+  <meta property="og:description" content={seo.ogDescription} />
+  <meta property="og:url" content={seo.canonical} />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content={seo.ogTitle} />
+  <meta name="twitter:description" content={seo.ogDescription} />
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#e63946" />
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="Pirlo TV — Partidos en Vivo" href="/feed.xml" />
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://bolaloca.my" />
+  <link rel="dns-prefetch" href="https://bolaloca.my" />
+
+  <!-- Schema.org JSON-LD -->
+  {schemaArray.map((s) => (
+    <script type="application/ld+json" set:html={JSON.stringify(s)} />
+  ))}
+
+  <!-- Build timestamp for cache busting -->
+  <meta name="build-time" content={buildTime} />
+</head>
+<body>
+  <nav class="nav" aria-label="Navegación principal">
+    <div class="nav__inner">
+      <a href="/" class="nav__logo" aria-label="Pirlo TV — Inicio">⚡ Pirlo TV</a>
+      <div class="nav__links" role="menubar">
+        <a href="/futbol/" class="nav__link" role="menuitem">Fútbol</a>
+        <a href="/mlb/" class="nav__link" role="menuitem">MLB</a>
+        <a href="/nba/" class="nav__link" role="menuitem">NBA</a>
+        <a href="/nhl/" class="nav__link" role="menuitem">NHL</a>
+        <a href="/motogp/" class="nav__link" role="menuitem">MotoGP</a>
+        <a href="/pirlo-tv/" class="nav__link nav__link--brand" role="menuitem">Pirlo TV</a>
+        <a href="/tarjeta-roja/" class="nav__link nav__link--brand" role="menuitem">Tarjeta Roja</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-content">
+    <div class="container">
+      <slot />
+    </div>
+  </main>
+
+  <footer class="footer" aria-label="Pie de página">
+    <div class="footer__inner">
+      <div class="footer__logo">⚡ Pirlo TV</div>
+      <nav class="footer__links" aria-label="Enlaces del pie de página">
+        <a href="/" class="footer__link">Inicio</a>
+        <a href="/futbol/" class="footer__link">Fútbol</a>
+        <a href="/mlb/" class="footer__link">MLB</a>
+        <a href="/beisbol/" class="footer__link">Béisbol</a>
+        <a href="/nba/" class="footer__link">NBA</a>
+        <a href="/nhl/" class="footer__link">NHL</a>
+        <a href="/motogp/" class="footer__link">MotoGP</a>
+        <a href="/champions-league/" class="footer__link">Champions</a>
+        <a href="/liga-mx/" class="footer__link">Liga MX</a>
+        <a href="/laliga/" class="footer__link">LaLiga</a>
+        <a href="/copa-libertadores/" class="footer__link">Copa Libertadores</a>
+        <a href="/pirlo-tv/" class="footer__link">Pirlo TV</a>
+        <a href="/tarjeta-roja/" class="footer__link">Tarjeta Roja TV</a>
+        <a href="/roja-directa-pirlo-tv/" class="footer__link">Roja Directa Pirlo TV</a>
+      </nav>
+      <p class="footer__disclaimer">
+        Pirlo TV es un directorio de streams deportivos. No alojamos ningún contenido de vídeo.
+        Todos los streams son proporcionados por terceros. Este sitio no tiene afiliación con ninguna
+        liga, club o emisora. Todos los derechos pertenecen a sus respectivos propietarios.
+        &copy; {new Date().getFullYear()} pirlo-tv.top
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Active nav link
+    const path = window.location.pathname;
+    document.querySelectorAll('.nav__link').forEach((el) => {
+      const href = el.getAttribute('href');
+      if (href && href !== '/' && path.startsWith(href)) {
+        el.classList.add('active');
+      }
+    });
+  </script>
+</body>
+</html>

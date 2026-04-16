@@ -1,0 +1,122 @@
+---
+// src/components/Player.astro
+import type { Match } from '../lib/types';
+import { PLAYER_BASE_URL, LANG_LABELS } from '../lib/config';
+
+interface Props { match: Match; }
+const { match: m } = Astro.props;
+
+const langs = [...new Set(m.channels.map((c) => c.lang))];
+const firstCh = m.channels[0]?.id ?? '';
+const servers = [1, 2, 3, 4];
+---
+<div class="player-wrapper" id="player-wrapper">
+  <iframe
+    id="player-iframe"
+    src={`${PLAYER_BASE_URL}/1/${firstCh}`}
+    allowfullscreen
+    allow="autoplay; fullscreen"
+    loading="lazy"
+    title={`${m.team1} vs ${m.team2} en vivo`}
+  ></iframe>
+</div>
+
+<div class="player-controls">
+  {langs.length > 0 && (
+    <div class="ctrl-group">
+      <span class="ctrl-label">🌐 Idioma</span>
+      <div class="ctrl-btns" id="lang-btns">
+        {langs.map((lang, i) => (
+          <button
+            class={`ctrl-btn ${i === 0 ? 'active' : ''}`}
+            data-lang={lang}
+            aria-label={`Cambiar idioma a ${LANG_LABELS[lang] ?? lang}`}
+          >
+            {LANG_LABELS[lang] ?? lang.toUpperCase()}
+          </button>
+        ))}
+      </div>
+    </div>
+  )}
+
+  <div class="ctrl-group">
+    <span class="ctrl-label">📡 Canal</span>
+    <div class="ctrl-btns" id="ch-btns">
+      {m.channels.map((ch, i) => (
+        <button
+          class={`ctrl-btn ${i === 0 ? 'active' : ''}`}
+          data-ch={ch.id}
+          data-lang={ch.lang}
+          aria-label={`Canal ${i + 1}`}
+        >
+          {i + 1}
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <div class="ctrl-group">
+    <span class="ctrl-label">🖥 Servidor</span>
+    <div class="ctrl-btns" id="srv-btns">
+      {servers.map((s, i) => (
+        <button
+          class={`ctrl-btn ${i === 0 ? 'active' : ''}`}
+          data-srv={s}
+          aria-label={`Servidor ${s}`}
+        >
+          {s}
+        </button>
+      ))}
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ channels: m.channels, PLAYER_BASE_URL }}>
+  let activeLang = channels[0]?.lang ?? '';
+  let activeCh   = channels[0]?.id ?? '';
+  let activeSrv  = 1;
+
+  function updatePlayer() {
+    const iframe = document.getElementById('player-iframe');
+    if (iframe) iframe.src = `${PLAYER_BASE_URL}/${activeSrv}/${activeCh}`;
+  }
+
+  function setActive(container, attr, val) {
+    container.querySelectorAll('.ctrl-btn').forEach((b) => {
+      b.classList.toggle('active', b.dataset[attr] == val);
+    });
+  }
+
+  // Lang buttons
+  document.getElementById('lang-btns')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('.ctrl-btn[data-lang]');
+    if (!btn) return;
+    activeLang = btn.dataset.lang;
+    // Pick first channel of that lang
+    const ch = channels.find((c) => c.lang === activeLang);
+    if (ch) {
+      activeCh = ch.id;
+      setActive(document.getElementById('ch-btns'), 'ch', activeCh);
+    }
+    setActive(document.getElementById('lang-btns'), 'lang', activeLang);
+    updatePlayer();
+  });
+
+  // Channel buttons
+  document.getElementById('ch-btns')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('.ctrl-btn[data-ch]');
+    if (!btn) return;
+    activeCh = btn.dataset.ch;
+    setActive(document.getElementById('ch-btns'), 'ch', activeCh);
+    updatePlayer();
+  });
+
+  // Server buttons
+  document.getElementById('srv-btns')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('.ctrl-btn[data-srv]');
+    if (!btn) return;
+    activeSrv = btn.dataset.srv;
+    setActive(document.getElementById('srv-btns'), 'srv', activeSrv);
+    updatePlayer();
+  });
+</script>

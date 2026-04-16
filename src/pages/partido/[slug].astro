@@ -1,0 +1,90 @@
+---
+// src/pages/partido/[slug].astro
+import Base from '../../layouts/Base.astro';
+import Player from '../../components/Player.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import FaqBlock from '../../components/FaqBlock.astro';
+import TimezoneRow from '../../components/TimezoneRow.astro';
+import MatchCard from '../../components/MatchCard.astro';
+import { getMatches } from '../../lib/data';
+import { matchSeo, sportsEventSchema, faqMatchSchema, breadcrumbSchema } from '../../lib/seo';
+import { SITE_URL } from '../../lib/config';
+
+export async function getStaticPaths() {
+  const matches = await getMatches();
+  return matches.map((m) => ({
+    params: { slug: m.slug },
+    props: { match: m },
+  }));
+}
+
+const { match: m } = Astro.props;
+const allMatches = await getMatches();
+const related = allMatches
+  .filter((r) => r.slug !== m.slug && (r.leagueSlug === m.leagueSlug || r.sportSlug === m.sportSlug))
+  .slice(0, 6);
+
+const seo = matchSeo(m);
+const schema = [
+  sportsEventSchema(m),
+  faqMatchSchema(m),
+  breadcrumbSchema([
+    { name: m.sportLabel, url: `${SITE_URL}/${m.sportSlug}/` },
+    { name: m.league, url: `${SITE_URL}/${m.leagueSlug}/` },
+    { name: `${m.team1} vs ${m.team2}`, url: seo.canonical },
+  ]),
+];
+
+const faqItems = [
+  {
+    q: `¿Dónde mirar ${m.team1} contra ${m.team2}?`,
+    a: `Ver ${m.team1} vs ${m.team2} en vivo gratis en Pirlo TV (pirlo-tv.top). El partido comienza a las ${m.time} UTC. Disponible en ${m.channels.length} canales.`,
+  },
+  {
+    q: `¿A qué hora juega ${m.team1} hoy?`,
+    a: `${m.team1} juega a las ${m.timezones} contra ${m.team2} por ${m.league}.`,
+  },
+  {
+    q: `¿En qué canal se transmite ${m.team1} vs ${m.team2}?`,
+    a: `El partido se transmite con ${m.channels.length} canales disponibles y 4 servidores en Pirlo TV. Ver gratis sin registro.`,
+  },
+];
+---
+<Base seo={seo} schema={schema}>
+  <div class="player-page">
+    <Breadcrumb items={[
+      { label: m.sportLabel, href: `/${m.sportSlug}/` },
+      { label: m.league, href: `/${m.leagueSlug}/` },
+      { label: `${m.team1} vs ${m.team2}` },
+    ]} />
+
+    <div class="match-header">
+      <div class="match-header__league">{m.league}</div>
+      <h1 class="match-header__h1">{m.team1} vs {m.team2} en Vivo</h1>
+      <div class="match-header__date">{m.dateLabel} · {m.time} UTC</div>
+    </div>
+
+    <Player match={m} />
+    <TimezoneRow timezones={m.timezones} />
+
+    <p style="font-size:0.85rem;color:#7a7a9a;margin-bottom:1.5rem;">
+      Ver {m.team1} vs {m.team2} en vivo por {m.league} en Pirlo TV.
+      El partido comienza a las {m.timezones}.
+      Disponible en {m.channels.length} canales con 4 servidores por canal.
+      Transmisión gratis sin registro. También disponible en
+      <a href="/tarjeta-roja/" style="color:var(--accent)">Tarjeta Roja TV</a> y
+      <a href="/pirlo-tv/" style="color:var(--accent)">Pirlo TV</a>.
+    </p>
+
+    <FaqBlock items={faqItems} />
+
+    {related.length > 0 && (
+      <div class="related">
+        <h2 class="section-title">Más Partidos Hoy</h2>
+        <div class="related__grid">
+          {related.map((r) => <MatchCard match={r} />)}
+        </div>
+      </div>
+    )}
+  </div>
+</Base>

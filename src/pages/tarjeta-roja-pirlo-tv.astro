@@ -1,0 +1,30 @@
+---
+// src/pages/tarjeta-roja-pirlo-tv.astro
+import Base from '../layouts/Base.astro';
+import MatchList from '../components/MatchList.astro';
+import { getMatches } from '../lib/data';
+import { brandPageSeo, breadcrumbSchema } from '../lib/seo';
+import { SITE_URL } from '../lib/config';
+
+const matches = await getMatches();
+const seo = brandPageSeo('Tarjeta Roja Pirlo TV', 'tarjeta-roja-pirlo-tv', matches.length);
+const schema = breadcrumbSchema([{ name: 'Tarjeta Roja Pirlo TV', url: SITE_URL + '/tarjeta-roja-pirlo-tv/' }]);
+---
+<Base seo={seo} schema={schema}>
+  <div style="max-width:800px;margin:0 auto;">
+    <div class="hero" style="margin-bottom:2rem;">
+      <div class="hero__badges">
+        <span class="badge badge--live">● Tarjeta Roja</span>
+        <span class="badge">Pirlo TV</span>
+        <span class="badge">tarjeta roja pirlo tv</span>
+      </div>
+      <h1 class="hero__title">🟥 <span>Tarjeta Roja Pirlo TV</span> — Partidos en Vivo</h1>
+      <p class="hero__sub">
+        Tarjeta Roja Pirlo TV en pirlo-tv.top. {matches.length} partidos disponibles hoy.
+        Tarjeta Roja · Pirlo TV — gratis sin registro.
+      </p>
+    </div>
+    <h2 class="section-title">Partidos en Vivo Hoy</h2>
+    <MatchList matches={matches} groupByLeague={true} />
+  </div>
+</Base>

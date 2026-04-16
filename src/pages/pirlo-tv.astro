@@ -1,0 +1,53 @@
+---
+// src/pages/pirlo-tv.astro
+import Base from '../layouts/Base.astro';
+import MatchList from '../components/MatchList.astro';
+import FaqBlock from '../components/FaqBlock.astro';
+import { getMatches } from '../lib/data';
+import { brandPageSeo, websiteSchema, breadcrumbSchema } from '../lib/seo';
+import { SITE_URL } from '../lib/config';
+
+const matches = await getMatches();
+const seo = brandPageSeo('Pirlo TV', 'pirlo-tv', matches.length);
+const schema = [
+  websiteSchema(),
+  breadcrumbSchema([
+    { name: 'Pirlo TV', url: SITE_URL + '/pirlo-tv/' },
+  ]),
+];
+
+const faqItems = [
+  { q: '¿Qué es Pirlo TV?', a: 'Pirlo TV (pirlo-tv.top) es un directorio de streams deportivos en vivo. Ofrece acceso gratuito a partidos de fútbol, béisbol MLB, baloncesto NBA, hockey NHL y MotoGP con múltiples canales y servidores.' },
+  { q: '¿Cómo usar Pirlo TV?', a: 'Entra en pirlo-tv.top, selecciona el deporte o partido que quieres ver y haz clic. Disponible en múltiples canales e idiomas. Gratis sin registro.' },
+  { q: '¿Pirlo TV tiene MLB?', a: 'Sí. Pirlo TV MLB ofrece todos los partidos de la Major League Baseball en directo gratis. Ver en /mlb/ o busca el equipo en /equipo/.' },
+  { q: '¿Pirlo TV es gratis?', a: 'Sí. Pirlo TV es completamente gratis. Sin registro, sin suscripción. Solo entra y mira.' },
+];
+---
+<Base seo={seo} schema={schema}>
+  <div style="max-width:800px;margin:0 auto;">
+    <div class="hero" style="margin-bottom:2rem;">
+      <div class="hero__badges">
+        <span class="badge badge--live">● PirloTV</span>
+        <span class="badge">pirlotv</span>
+        <span class="badge">pirlo tv en vivo</span>
+        <span class="badge">pirlo tv gratis</span>
+      </div>
+      <h1 class="hero__title"><span>Pirlo TV</span> — Fútbol y Deportes en Vivo Gratis</h1>
+      <p class="hero__sub">
+        Pirlo TV es el mejor lugar para ver deportes en vivo gratis. {matches.length} partidos disponibles hoy
+        con múltiples canales y servidores. Sin registro, sin pago.
+      </p>
+    </div>
+
+    <p style="font-size:0.85rem;color:#7a7a9a;margin-bottom:1.5rem;">
+      Pirlo TV (pirlotv) ofrece acceso gratuito a todos los deportes en directo:
+      fútbol LaLiga, Liga MX, Champions League, béisbol MLB, baloncesto NBA, hockey NHL y MotoGP.
+      También disponible como <a href="/tarjeta-roja/" style="color:var(--accent)">Tarjeta Roja TV</a> y
+      <a href="/roja-directa-pirlo-tv/" style="color:var(--accent)">Roja Directa</a>.
+    </p>
+
+    <h2 class="section-title">Todos los Partidos de Hoy</h2>
+    <MatchList matches={matches} groupByLeague={true} />
+    <FaqBlock items={faqItems} />
+  </div>
+</Base>
