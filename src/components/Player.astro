@@ -12,16 +12,43 @@ const initialSrc = firstChannel?.url || `${PLAYER_BASE_URL}/1/${firstChannel?.id
 const servers = [1, 2, 3, 4];
 ---
 <div class="player-wrapper" id="player-wrapper">
+  <div id="click-catcher" class="click-catcher"></div>
   <iframe
     id="player-iframe"
     src={initialSrc}
     allowfullscreen
     allow="autoplay; fullscreen"
-    sandbox="allow-scripts allow-same-origin allow-presentation"
     loading="lazy"
     title={`${m.team1} vs ${m.team2} en vivo`}
   ></iframe>
 </div>
+
+<style>
+  .player-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .click-catcher {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    cursor: pointer;
+    background: rgba(0,0,0,0.01);
+  }
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+</style>
 
 <div class="player-controls">
   {langs.length > 0 && (
@@ -78,10 +105,27 @@ const servers = [1, 2, 3, 4];
   let activeCh   = channels[0]?.id ?? '';
   let activeSrv  = 1;
 
+  // Click-catcher logic to "burn" the first popup click
+  function initCatcher() {
+    const catcher = document.getElementById('click-catcher');
+    if (catcher) {
+      catcher.onclick = () => {
+        catcher.style.display = 'none';
+        // Re-enable catcher after a short delay if you want to catch more clicks
+        // but usually, one is enough to let the user hit the play button.
+      };
+    }
+  }
+  initCatcher();
+
   function updatePlayer() {
     const iframe = document.getElementById('player-iframe');
     const srvGroup = document.getElementById('srv-group');
+    const catcher = document.getElementById('click-catcher');
     if (!iframe) return;
+
+    // Reset catcher when changing streams
+    if (catcher) catcher.style.display = 'block';
 
     // Find the current channel object to see if it has a direct URL
     const chObj = channels.find(c => c.id == activeCh && c.lang == activeLang) || channels.find(c => c.id == activeCh);
