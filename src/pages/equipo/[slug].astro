@@ -18,10 +18,12 @@ export async function getStaticPaths() {
 
   // Add known teams
   for (const t of KNOWN_TEAMS) teamSet.set(toSlug(t), t);
-  // Add all teams from live data
+  // Add all teams from live data (skip empty names)
   for (const m of all) {
-    teamSet.set(toSlug(m.team1), m.team1);
-    teamSet.set(toSlug(m.team2), m.team2);
+    const s1 = toSlug(m.team1);
+    const s2 = toSlug(m.team2);
+    if (s1) teamSet.set(s1, m.team1);
+    if (s2) teamSet.set(s2, m.team2);
   }
 
   return [...teamSet.entries()].map(([slug, name]) => ({
