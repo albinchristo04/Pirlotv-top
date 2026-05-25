@@ -6,35 +6,73 @@ import Breadcrumb from '../components/Breadcrumb.astro';
 import FaqBlock from '../components/FaqBlock.astro';
 import { getMatches } from '../lib/data';
 import { leagueSeo, breadcrumbSchema } from '../lib/seo';
-import { SPORT_MAP, SITE_URL } from '../lib/config';
+import { SITE_URL } from '../lib/config';
 
 export async function getStaticPaths() {
+  const MAJOR_LEAGUES: Record<string, string> = {
+    'liga-mx': 'Liga MX',
+    'futbol-argentino': 'Fútbol Argentino',
+    'brasileirao': 'Brasileirão',
+    'liga-chilena': 'Liga Chilena',
+    'liga-ecuador': 'Liga Pro Ecuador',
+    'copa-libertadores': 'Copa Libertadores',
+    'copa-sudamericana': 'Copa Sudamericana',
+    'champions-league': 'Champions League',
+    'laliga': 'LaLiga',
+    'premier-league': 'Premier League',
+    'mls': 'MLS',
+    'nba': 'NBA',
+    'mlb': 'MLB',
+    'motogp': 'MotoGP',
+    'nhl': 'NHL',
+  };
+
   const matches = await getMatches();
-  const leagueSlugs = new Map<string, string>(); // slug → display name
+  const leagueSlugs = new Map<string, string>(Object.entries(MAJOR_LEAGUES));
+  
   for (const m of matches) {
-    if (!leagueSlugs.has(m.leagueSlug)) leagueSlugs.set(m.leagueSlug, m.league);
+    if (m.leagueSlug && !leagueSlugs.has(m.leagueSlug)) {
+      leagueSlugs.set(m.leagueSlug, m.league);
+    }
   }
+  
   return [...leagueSlugs.entries()].map(([slug, name]) => ({
     params: { league: slug },
     props: { leagueName: name, leagueSlug: slug },
   }));
 }
 
+function getSportForLeague(slug: string): { sportSlug: string; sportLabel: string } {
+  if (slug === 'nba') return { sportSlug: 'nba', sportLabel: 'Baloncesto' };
+  if (slug === 'mlb') return { sportSlug: 'mlb', sportLabel: 'Béisbol' };
+  if (slug === 'motogp') return { sportSlug: 'motogp', sportLabel: 'MotoGP' };
+  if (slug === 'nhl') return { sportSlug: 'nhl', sportLabel: 'Hockey' };
+  return { sportSlug: 'futbol', sportLabel: 'Fútbol' };
+}
+
 const { leagueName, leagueSlug } = Astro.props;
 const allMatches = await getMatches();
 const matches = allMatches.filter((m) => m.leagueSlug === leagueSlug);
-const sportSlug = matches[0]?.sportSlug ?? 'deportes';
-const sportLabel = matches[0]?.sportLabel ?? 'Deportes';
+
+const { sportSlug, sportLabel } = getSportForLeague(leagueSlug);
 
 const seo = leagueSeo(leagueName, leagueSlug, matches.length);
+if (matches.length === 0) {
+  seo.title = `${leagueName} En Vivo Hoy — Transmisiones Online Gratis | Pirlo TV`;
+  seo.description = `Ver partidos de ${leagueName} en vivo hoy gratis en Pirlo TV. Toda la información de transmisiones, canales y servidores en directo sin registro.`;
+}
+
 const schema = breadcrumbSchema([
   { name: sportLabel, url: `${SITE_URL}/${sportSlug}/` },
   { name: leagueName, url: `${SITE_URL}/${leagueSlug}/` },
 ]);
 
-const faqItems = [
+const faqItems = matches.length > 0 ? [
   { q: `¿Dónde ver ${leagueName} en vivo?`, a: `Ver ${leagueName} en vivo gratis en Pirlo TV (pirlo-tv.top). Hoy hay ${matches.length} partidos disponibles.` },
   { q: `¿Qué partidos hay hoy de ${leagueName}?`, a: matches.slice(0, 3).map((m) => `${m.team1} vs ${m.team2} a las ${m.time} UTC`).join(', ') + '. Todos disponibles en directo gratis en Pirlo TV.' },
+] : [
+  { q: `¿Dónde ver ${leagueName} en vivo hoy?`, a: `Ver ${leagueName} en vivo gratis en Pirlo TV (pirlo-tv.top). Cuando comience la jornada, podrás ver todos los partidos en directo con múltiples canales y servidores sin registro.` },
+  { q: `¿Cómo ver las transmisiones de ${leagueName}?`, a: `Para ver ${leagueName} gratis, simplemente entra a pirlo-tv.top en el horario asignado del partido, haz clic en el evento y elige entre los diferentes canales de transmisión disponibles.` },
 ];
 ---
 <Base seo={seo} schema={schema}>
@@ -42,11 +80,25 @@ const faqItems = [
     { label: sportLabel, href: `/${sportSlug}/` },
     { label: leagueName },
   ]} />
+  
   <h1 class="hero__title" style="margin-bottom:0.5rem;"><span>{leagueName}</span> en Vivo</h1>
+  
   <p style="color:#7a7a9a;font-size:0.9rem;margin-bottom:2rem;">
-    {leagueName} en vivo en Pirlo TV. {matches.length} partidos hoy en directo gratis.
+    {leagueName} en vivo en Pirlo TV. {matches.length > 0 ? `${matches.length} partidos hoy en directo gratis.` : 'Transmisiones online gratis para todos los partidos de la jornada.'}
     Múltiples canales en español, inglés y portugués. Pirlo TV · Roja Directa · Tarjeta Roja TV.
   </p>
-  <MatchList matches={matches} groupByLeague={false} />
-  {faqItems.length > 0 && <FaqBlock items={faqItems} />}
+  
+  {matches.length > 0 ? (
+    <MatchList matches={matches} groupByLeague={false} />
+  ) : (
+    <div class="empty">
+      <div class="empty__icon">📅</div>
+      <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">No hay partidos de {leagueName} programados para hoy.</p>
+      <p style="font-size: 0.9rem; max-width: 500px; margin: 0 auto;">
+        Vuelve más tarde para consultar la agenda de transmisiones en directo de {leagueName}. Todos los partidos se actualizan en tiempo real.
+      </p>
+    </div>
+  )}
+  
+  <FaqBlock items={faqItems} />
 </Base>

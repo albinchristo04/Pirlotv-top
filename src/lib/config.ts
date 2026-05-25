@@ -1,7 +1,7 @@
 // src/lib/config.ts
 export const PLAYER_BASE_URL = 'https://bolaloca.my/player';
 export const DATA_URL =
-  'https://raw.githubusercontent.com/albinchristo04/arda/refs/heads/main/rereyano_data.json';
+  'https://sportsonline.ppvtv.top/api/matches.json';
 export const SITE_URL = 'https://pirlo-tv.top';
 export const SITE_NAME = 'Pirlo TV';
 export const SITE_TAGLINE = 'Pirlo TV — Roja Directa · Tarjeta Roja TV';

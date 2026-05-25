@@ -27,38 +27,52 @@ const schema = [
       <span>Pirlo TV</span> — Deportes en Vivo Gratis
     </h1>
     <p class="hero__sub">
-      Ver {matches.length} partidos en vivo hoy gratis. Fútbol, MLB, NBA, NHL y más deportes
-      en directo con múltiples canales en español, inglés y portugués.
+      Ver {matches.length} partidos en vivo hoy gratis en Pirlo TV. Fútbol, MLB, NBA, MotoGP y más deportes
+      en directo con múltiples canales en español de forma rápida y sencilla.
     </p>
     <p class="hero__ts">🔄 Actualizado: {buildTime} UTC</p>
   </section>
 
-  <!-- SEO text block (hidden visually but crawlable) -->
-  <p style="font-size:0.82rem;color:#555;margin-bottom:1.5rem;">
-    Pirlo TV es el mejor lugar para ver deportes en vivo gratis. Roja Directa · Tarjeta Roja TV · PirloTV
-    — todos los partidos en un solo lugar. Béisbol MLB, baloncesto NBA, hockey NHL, fútbol LaLiga,
-    Liga MX, Champions League, Copa Libertadores y más. Transmisión gratis sin registro.
-  </p>
+  <!-- SEO text block (visually subtle but highly crawlable for Bing SEO) -->
+  <div style="font-size:0.85rem;color:#5c5c7a;margin-bottom:2rem;line-height:1.6;border-left:2px solid var(--accent);padding-left:0.75rem;">
+    <strong>Pirlo TV en vivo gratis</strong> es el portal de referencia para ver deportes online. Accede a las transmisiones de 
+    <strong>tarjeta roja futbol en vivo gratis pirlo</strong> y los streams oficiales de <strong>roja directa pirlo tv</strong>. 
+    Disfruta de todos los partidos de fútbol, incluyendo la Liga MX, Copa Libertadores, Copa Sudamericana, Fútbol Argentino, Brasileirão y LaLiga. 
+    También transmitimos <strong>pirlo tv motogp</strong> en directo, carreras de motos y <strong>pirlo tv nba hoy</strong> en vivo, 
+    así como todo el béisbol en <strong>pirlo tv mlb</strong> hoy. Todo en pirlo-tv.top, tu alternativa estable a www.pirlotv.es gratis en directo.
+  </div>
 
   <MatchList matches={matches} groupByLeague={true} />
 
-  <!-- Sport hub links -->
-  <h2 class="section-title">Deportes</h2>
-  <div class="match-grid" style="margin-bottom:2rem;">
+  <!-- Competition Hub links -->
+  <h2 class="section-title">🏆 Hub de Competiciones</h2>
+  <p style="color:#7a7a9a;font-size:0.85rem;margin:-0.5rem 0 1.25rem;">
+    Explora todas las ligas disponibles. Enfoque especial en fútbol de Latinoamérica y torneos mundiales.
+  </p>
+  <div class="match-grid" style="margin-bottom:1.5rem;">
     {[
-      { href: '/futbol/',   label: '⚽ Fútbol',     sub: 'LaLiga · Liga MX · Champions' },
-      { href: '/mlb/',      label: '⚾ MLB',          sub: 'Pirlo TV MLB · Béisbol en vivo' },
-      { href: '/nba/',      label: '🏀 NBA',          sub: 'Baloncesto en directo' },
-      { href: '/nhl/',      label: '🏒 NHL',          sub: 'Hockey en vivo' },
-      { href: '/motogp/',   label: '🏍 MotoGP',       sub: 'MotoGP en directo' },
-      { href: '/beisbol/',  label: '⚾ Béisbol',      sub: 'Latino MLB en vivo' },
+      { href: '/liga-mx/',           label: '🇲🇽 Liga MX',            sub: 'Fútbol Mexicano en vivo gratis' },
+      { href: '/copa-libertadores/', label: '🏆 Copa Libertadores',   sub: 'Copa Libertadores de América' },
+      { href: '/futbol-argentino/',  label: '🇦🇷 Fútbol Argentino',   sub: 'Liga Profesional · Copa Argentina' },
+      { href: '/brasileirao/',       label: '🇧🇷 Brasileirão',        sub: 'Serie A de Brasil en directo' },
+      { href: '/liga-chilena/',      label: '🇨🇱 Liga Chilena',       sub: 'Campeonato Nacional chileno' },
+      { href: '/laliga/',            label: '🇪🇸 LaLiga',             sub: 'Real Madrid y Barcelona hoy' },
+      { href: '/nba/',               label: '🏀 NBA',                sub: 'Pirlo TV NBA en vivo hoy' },
+      { href: '/mlb/',               label: '⚾ MLB',                sub: 'Béisbol de Grandes Ligas gratis' },
+      { href: '/motogp/',            label: '🏍 MotoGP',              sub: 'Carreras y prácticas de MotoGP' },
     ].map((hub) => (
       <a href={hub.href} class="match-card" style="text-decoration:none;">
-        <div class="match-card__teams" style="font-size:1rem;">{hub.label}</div>
+        <div class="match-card__teams" style="font-size:0.95rem;">{hub.label}</div>
         <div class="match-card__league">{hub.sub}</div>
-        <div class="match-card__live" style="margin-top:0.25rem;">Ver ahora →</div>
+        <div class="match-card__live" style="margin-top:0.25rem;">Ver partidos →</div>
       </a>
     ))}
+  </div>
+  
+  <div style="text-align:center;margin-bottom:3rem;">
+    <a href="/hub/" class="ctrl-btn active" style="padding:0.6rem 1.5rem;font-size:0.9rem;border-radius:30px;display:inline-block;text-decoration:none;">
+      Ver Todas las Competiciones →
+    </a>
   </div>
 
   <!-- Brand pages -->

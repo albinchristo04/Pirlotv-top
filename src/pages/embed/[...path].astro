@@ -1,4 +1,5 @@
 ---
+// src/pages/embed/[...path].astro
 import { getMatches2 } from '../../lib/data2';
 
 export async function getStaticPaths() {
@@ -8,9 +9,12 @@ export async function getStaticPaths() {
   matches.forEach(m => {
     m.channels.forEach(ch => {
       if (ch.url && ch.url.includes('/embed/')) {
-        // Extract the path after /embed/
-        const part = ch.url.split('/embed/')[1];
-        if (part) paths.add(part);
+        // Extract the path after /embed/, stripping query parameters
+        const partWithQuery = ch.url.split('/embed/')[1];
+        if (partWithQuery) {
+          const part = partWithQuery.split('?')[0];
+          paths.add(part);
+        }
       }
     });
   });
@@ -24,8 +28,7 @@ const { path } = Astro.params;
 if (!path) return Astro.redirect('/404');
 
 // Reconstruct the external URL
-// Assuming the source is always pooembed.eu for this specific path
-const targetUrl = `https://pooembed.eu/embed/${path}`;
+const targetUrl = `https://sportsonline.ppvtv.top/embed/${path}`;
 ---
 <!DOCTYPE html>
 <html lang="es">
@@ -33,7 +36,7 @@ const targetUrl = `https://pooembed.eu/embed/${path}`;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>Stream Player</title>
+    <title>Reproductor Stream</title>
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
         iframe { border: 0; width: 100%; height: 100%; }
@@ -46,6 +49,7 @@ const targetUrl = `https://pooembed.eu/embed/${path}`;
         src={targetUrl}
         allowfullscreen
         allow="autoplay; fullscreen"
+        data-base-src={targetUrl}
     ></iframe>
     <script>
         // Advanced Multi-Layer Popup Guard
@@ -66,16 +70,28 @@ const targetUrl = `https://pooembed.eu/embed/${path}`;
             setInterval(protect, 500); // Re-enforce every 500ms
         })();
 
-        const catcher = document.getElementById('click-catcher');
-        catcher.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            clickCount++;
-            if (clickCount >= MAX_CLICKS) {
-                this.style.display = 'none';
+        // Forward query params (like ?ch=0) to the target iframe src
+        const iframe = document.getElementById('player-iframe') as HTMLIFrameElement;
+        if (iframe) {
+            const baseSrc = iframe.getAttribute('data-base-src');
+            const search = window.location.search;
+            if (baseSrc && search) {
+                iframe.src = baseSrc + search;
             }
-        };
+        }
+
+        const catcher = document.getElementById('click-catcher');
+        if (catcher) {
+            catcher.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                clickCount++;
+                if (clickCount >= MAX_CLICKS) {
+                    this.style.display = 'none';
+                }
+            };
+        }
     </script>
 </body>
 </html>
