@@ -1,0 +1,83 @@
+---
+// src/pages/futbol-en-vivo.astro
+import Base from '../layouts/Base.astro';
+import MatchList from '../components/MatchList.astro';
+import FaqBlock from '../components/FaqBlock.astro';
+import { getMatches } from '../lib/data';
+import { brandPageSeo, breadcrumbSchema, webPageSchema, faqPageSchema } from '../lib/seo';
+import { SITE_URL } from '../lib/config';
+
+const allMatches = await getMatches();
+const futbolMatches = allMatches.filter(m => m.sportSlug === 'futbol');
+const seo = brandPageSeo('Fútbol en Vivo', 'futbol-en-vivo', futbolMatches.length);
+
+const faqItems = [
+  { q: '¿Dónde ver fútbol en vivo hoy?', a: `Ver fútbol en vivo hoy gratis en Pirlo TV (pirlo-tv.top). ${futbolMatches.length} partidos de fútbol disponibles en directo con múltiples canales en español. Liga MX, Copa Libertadores, Fútbol Argentino, Brasileirão, LaLiga y más.` },
+  { q: '¿Cómo ver fútbol en vivo gratis?', a: 'Para ver fútbol en vivo gratis, entra en pirlo-tv.top, selecciona el partido que quieres ver y haz clic. Sin registro, sin suscripción, sin pago. Múltiples canales y servidores disponibles.' },
+  { q: '¿Qué partidos de fútbol hay hoy?', a: `Hoy hay ${futbolMatches.length} partidos de fútbol en vivo en Pirlo TV, incluyendo ligas de Latinoamérica (Liga MX, Copa Libertadores, Fútbol Argentino) y Europa (LaLiga, Premier League, Champions League).` },
+  { q: '¿Ver fútbol en vivo gratis o pagar?', a: 'En Pirlo TV ver fútbol en vivo es completamente gratis. No necesitas pagar ni suscribirte. Accede directamente a pirlo-tv.top y disfruta de todos los partidos con múltiples canales.' },
+  { q: '¿Fútbol en vivo en Pirlo TV tiene Liga MX?', a: 'Sí. Pirlo TV ofrece Liga MX en vivo gratis. Todos los partidos del campeonato mexicano: Cruz Azul, Pumas UNAM, Chivas, América, Monterrey, Tigres y más. Incluye Liguilla y finales.' },
+];
+
+const schema = [
+  webPageSchema(seo),
+  faqPageSchema(faqItems),
+  breadcrumbSchema([
+    { name: 'Fútbol en Vivo', url: SITE_URL + '/futbol-en-vivo/' },
+  ]),
+];
+---
+<Base seo={seo} schema={schema}>
+  <div style="max-width:900px;margin:0 auto;">
+    <div class="hero" style="margin-bottom:2rem;">
+      <div class="hero__badges">
+        <span class="badge badge--live">● Fútbol en Vivo</span>
+        <span class="badge">futbol en vivo hoy</span>
+        <span class="badge">ver futbol gratis</span>
+        <span class="badge">futbol en vivo gratis</span>
+      </div>
+      <h1 class="hero__title">📺 <span>Fútbol en Vivo</span> Hoy — Transmisiones Gratis</h1>
+      <p class="hero__sub">
+        Ver fútbol en vivo gratis hoy en Pirlo TV. {futbolMatches.length} partidos de fútbol en directo con múltiples canales en español.
+        Liga MX, Copa Libertadores, Fútbol Argentino, Brasileirão, LaLiga, Premier League y más.
+      </p>
+    </div>
+
+    <!-- SEO text block -->
+    <div style="font-size:0.85rem;color:#5c5c7a;margin-bottom:2rem;line-height:1.7;border-left:2px solid var(--accent2);padding-left:0.75rem;">
+      <strong>Fútbol en vivo hoy gratis</strong> en Pirlo TV (pirlo-tv.top). La mejor plataforma para ver
+      <strong>fútbol en vivo gratis</strong> de todas las ligas del mundo. Transmisiones en directo de
+      <strong>Liga MX en vivo</strong>, <strong>Copa Libertadores</strong>, <strong>Fútbol Argentino</strong>,
+      <strong>Brasileirão</strong>, <strong>Liga Chilena</strong>, <strong>LaLiga</strong> y <strong>Premier League</strong>.
+      También disponible como <a href="/futbol-libre/" style="color:var(--green)">fútbol libre</a>,
+      <a href="/roja-directa-en-vivo/" style="color:var(--accent)">roja directa en vivo</a> y
+      <a href="/pirlo-tv/" style="color:var(--accent)">pirlo tv</a>.
+    </div>
+
+    <!-- LATAM League Hub links -->
+    <h2 class="section-title">🏆 Ligas de Fútbol en Vivo</h2>
+    <div class="match-grid" style="margin-bottom:2rem;">
+      {[
+        { href: '/liga-mx/',           label: '🇲🇽 Liga MX',            sub: 'Cruz Azul, Pumas, Chivas, América' },
+        { href: '/copa-libertadores/', label: '🏆 Copa Libertadores',   sub: 'El torneo más importante de Sudamérica' },
+        { href: '/futbol-argentino/',  label: '🇦🇷 Fútbol Argentino',   sub: 'Boca Juniors, River Plate en vivo' },
+        { href: '/brasileirao/',       label: '🇧🇷 Brasileirão',        sub: 'Palmeiras, Flamengo, São Paulo' },
+        { href: '/liga-chilena/',      label: '🇨🇱 Liga Chilena',       sub: 'Colo Colo, U. de Chile' },
+        { href: '/liga-betplay/',      label: '🇨🇴 Liga BetPlay',       sub: 'Millonarios, Atlético Nacional' },
+        { href: '/laliga/',            label: '🇪🇸 LaLiga',             sub: 'Real Madrid, Barcelona' },
+        { href: '/premier-league/',    label: '🇬🇧 Premier League',     sub: 'Liverpool, Manchester City' },
+      ].map((hub) => (
+        <a href={hub.href} class="match-card" style="text-decoration:none;">
+          <div class="match-card__teams" style="font-size:0.95rem;">{hub.label}</div>
+          <div class="match-card__league">{hub.sub}</div>
+          <div class="match-card__live" style="margin-top:0.25rem;">Ver partidos →</div>
+        </a>
+      ))}
+    </div>
+
+    <h2 class="section-title">⚽ Partidos de Fútbol en Vivo Hoy</h2>
+    <MatchList matches={futbolMatches} groupByLeague={true} />
+
+    <FaqBlock items={faqItems} />
+  </div>
+</Base>

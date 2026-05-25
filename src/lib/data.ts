@@ -79,7 +79,7 @@ function classifyMatch(title: string): { league: string; leagueSlug: string; spo
   const ligaMxTeams = [
     'pumas', 'cruz azul', 'chivas', 'guadalajara', 'america', 'américa', 'monterrey', 'tigres', 'toluca',
     'pachuca', 'santos laguna', 'atlas', 'tijuana', 'necaxa', 'mazatlan', 'mazatlán', 'juarez', 'juárez',
-    'queretaro', 'querétaro', 'puebla', 'san luis', 'león', 'leon'
+    'queretaro', 'querétaro', 'puebla', 'san luis', 'león', 'leon', 'unam'
   ];
   if (ligaMxTeams.some(team => t.includes(team))) {
     return { league: 'Liga MX', leagueSlug: 'liga-mx', sportLabel: 'Fútbol', sportSlug: 'futbol' };
@@ -89,7 +89,9 @@ function classifyMatch(title: string): { league: string; leagueSlug: string; spo
   const argTeams = [
     'boca juniors', 'boca', 'river plate', 'river', 'racing club', 'racing', 'independiente', 'san lorenzo',
     'vélez', 'velez', 'estudiantes', 'gimnasia', 'huracan', 'huracán', 'talleres', 'belgrano', 'newell',
-    'rosario central', 'lanus', 'lanús', 'banfield', 'defensa y justicia', 'argentinos juniors'
+    'rosario central', 'lanus', 'lanús', 'banfield', 'defensa y justicia', 'argentinos juniors',
+    'godoy cruz', 'platense', 'tigre', 'central córdoba', 'central cordoba', 'barracas', 'sarmiento',
+    'instituto', 'unión de santa fe', 'union de santa fe'
   ];
   if (argTeams.some(team => t.includes(team)) || t.includes('copa argentina') || t.includes('argentina liga')) {
     return { league: 'Fútbol Argentino', leagueSlug: 'futbol-argentino', sportLabel: 'Fútbol', sportSlug: 'futbol' };
@@ -99,7 +101,8 @@ function classifyMatch(title: string): { league: string; leagueSlug: string; spo
   const brTeams = [
     'sao paulo', 'são paulo', 'palmeiras', 'flamengo', 'corinthians', 'fluminense', 'vasco', 'botafogo',
     'gremio', 'grêmio', 'internacional', 'cruzeiro', 'atletico mineiro', 'atlético mineiro', 'bahia', 'coritiba',
-    'paranaense', 'fortaleza', 'bragantino'
+    'paranaense', 'fortaleza', 'bragantino', 'santos', 'goias', 'goiás', 'cuiabá', 'cuiaba',
+    'botafogo-sp', 'athletic'
   ];
   if (brTeams.some(team => t.includes(team))) {
     return { league: 'Brasileirão', leagueSlug: 'brasileirao', sportLabel: 'Fútbol', sportSlug: 'futbol' };
@@ -109,16 +112,58 @@ function classifyMatch(title: string): { league: string; leagueSlug: string; spo
   const clTeams = [
     'colo colo', 'colo-colo', 'u. de chile', 'universidad de chile', 'u. catolica', 'u. católica', 'universidad catolica',
     'union española', 'unión española', 'audax', 'palestino', 'coquimbo', 'huachipato', 'cobreloa', 'copiapo', 'copiapó',
-    'nublense', 'ñublense', 'cobresal'
+    'nublense', 'ñublense', 'cobresal', 'everton de viña', 'o\'higgins', 'curicó', 'curico'
   ];
   if (clTeams.some(team => t.includes(team))) {
     return { league: 'Liga Chilena', leagueSlug: 'liga-chilena', sportLabel: 'Fútbol', sportSlug: 'futbol' };
   }
 
   // Liga Ecuador
-  const ecTeams = ['ldu quito', 'barcelona sc', 'emelec', 'independiente del valle', 'aucas', 'el nacional', 'ligapro'];
+  const ecTeams = ['ldu quito', 'barcelona sc', 'emelec', 'independiente del valle', 'aucas', 'el nacional', 'ligapro',
+    'delfín', 'delfin', 'técnico universitario', 'tecnico universitario', 'mushuc runa'];
   if (ecTeams.some(team => t.includes(team)) || t.includes('ecuador') || t.includes('ligapro ecuador')) {
     return { league: 'Liga Pro Ecuador', leagueSlug: 'liga-ecuador', sportLabel: 'Fútbol', sportSlug: 'futbol' };
+  }
+
+  // Liga BetPlay (Colombia)
+  const coTeams = [
+    'millonarios', 'atlético nacional', 'atletico nacional', 'deportivo cali', 'junior', 'santa fe',
+    'américa de cali', 'america de cali', 'once caldas', 'deportes tolima', 'bucaramanga',
+    'envigado', 'águilas doradas', 'aguilas doradas', 'patriotas', 'boyacá chicó', 'boyaca chico',
+    'deportivo pasto', 'jaguares', 'la equidad'
+  ];
+  if (coTeams.some(team => t.includes(team)) || t.includes('betplay') || t.includes('colombia liga')) {
+    return { league: 'Liga BetPlay', leagueSlug: 'liga-betplay', sportLabel: 'Fútbol', sportSlug: 'futbol' };
+  }
+
+  // Liga 1 Perú
+  const peTeams = [
+    'alianza lima', 'universitario', 'sporting cristal', 'melgar', 'cienciano',
+    'sport huancayo', 'carlos mannucci', 'binacional', 'ayacucho', 'cantolao',
+    'cusco fc', 'sport boys', 'césar vallejo', 'cesar vallejo'
+  ];
+  if (peTeams.some(team => t.includes(team)) || t.includes('liga 1 peru') || t.includes('peru liga')) {
+    return { league: 'Liga 1 Perú', leagueSlug: 'liga-peru', sportLabel: 'Fútbol', sportSlug: 'futbol' };
+  }
+
+  // Primera División Uruguay
+  const uyTeams = [
+    'peñarol', 'penarol', 'nacional', 'defensor sporting', 'danubio', 'wanderers',
+    'plaza colonia', 'cerro largo', 'liverpool fc', 'fénix', 'fenix', 'boston river',
+    'river plate montevideo', 'rentistas'
+  ];
+  if (uyTeams.some(team => t.includes(team)) || t.includes('uruguay liga') || t.includes('primera división uruguay')) {
+    return { league: 'Primera División Uruguay', leagueSlug: 'futbol-uruguayo', sportLabel: 'Fútbol', sportSlug: 'futbol' };
+  }
+
+  // División Profesional Paraguay
+  const pyTeams = [
+    'olimpia', 'cerro porteño', 'cerro porteno', 'libertad', 'guaraní', 'guarani',
+    'sol de américa', 'sol de america', 'sportivo luqueño', 'sportivo luqueno',
+    'nacional asunción', 'nacional asuncion', 'general caballero'
+  ];
+  if (pyTeams.some(team => t.includes(team)) || t.includes('paraguay liga') || t.includes('división profesional')) {
+    return { league: 'División Profesional Paraguay', leagueSlug: 'futbol-paraguayo', sportLabel: 'Fútbol', sportSlug: 'futbol' };
   }
 
   // Champions League
@@ -145,13 +190,13 @@ function classifyMatch(title: string): { league: string; leagueSlug: string; spo
   }
 
   // MLS
-  if (t.includes('mls') || t.includes('inter miami', ) || t.includes('lafc') || t.includes('sounders') || t.includes('galaxy') || t.includes('major league soccer')) {
+  if (t.includes('mls') || t.includes('inter miami') || t.includes('lafc') || t.includes('sounders') || t.includes('galaxy') || t.includes('major league soccer') || t.includes('los angeles fc') || t.includes('seattle sounders')) {
     return { league: 'MLS', leagueSlug: 'mls', sportLabel: 'Fútbol', sportSlug: 'futbol' };
   }
 
   // Default to Fútbol if it's "x" or "vs", otherwise Deportes
   if (t.includes(' x ') || t.includes(' vs ') || t.includes(' vs. ')) {
-    return { league: 'Fútbol', leagueSlug: 'futbol', sportLabel: 'Fútbol', sportSlug: 'futbol' };
+    return { league: 'Otros Partidos', leagueSlug: 'otros', sportLabel: 'Fútbol', sportSlug: 'futbol' };
   }
 
   return { league: 'Deportes', leagueSlug: 'deportes', sportLabel: 'Deportes', sportSlug: 'deportes' };
@@ -272,4 +317,23 @@ export async function getMatchesByLeague(leagueSlug: string): Promise<Match[]> {
 export async function getMatchBySlug(slug: string): Promise<Match | undefined> {
   const all = await getMatches();
   return all.find((m) => m.slug === slug);
+}
+
+/** Returns all detected leagues with match counts, sorted by count descending */
+export async function getAllLeagues(): Promise<{ slug: string; name: string; count: number; sportSlug: string }[]> {
+  const all = await getMatches();
+  const leagueMap = new Map<string, { name: string; count: number; sportSlug: string }>();
+  
+  for (const m of all) {
+    const existing = leagueMap.get(m.leagueSlug);
+    if (existing) {
+      existing.count++;
+    } else {
+      leagueMap.set(m.leagueSlug, { name: m.league, count: 1, sportSlug: m.sportSlug });
+    }
+  }
+  
+  return [...leagueMap.entries()]
+    .map(([slug, data]) => ({ slug, ...data }))
+    .sort((a, b) => b.count - a.count);
 }

@@ -5,7 +5,7 @@ import MatchList from '../components/MatchList.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import FaqBlock from '../components/FaqBlock.astro';
 import { getMatches } from '../lib/data';
-import { leagueSeo, breadcrumbSchema } from '../lib/seo';
+import { leagueSeo, breadcrumbSchema, webPageSchema, itemListSchema, faqPageSchema } from '../lib/seo';
 import { SITE_URL } from '../lib/config';
 
 export async function getStaticPaths() {
@@ -15,6 +15,10 @@ export async function getStaticPaths() {
     'brasileirao': 'Brasileirão',
     'liga-chilena': 'Liga Chilena',
     'liga-ecuador': 'Liga Pro Ecuador',
+    'liga-betplay': 'Liga BetPlay',
+    'liga-peru': 'Liga 1 Perú',
+    'futbol-uruguayo': 'Primera División Uruguay',
+    'futbol-paraguayo': 'División Profesional Paraguay',
     'copa-libertadores': 'Copa Libertadores',
     'copa-sudamericana': 'Copa Sudamericana',
     'champions-league': 'Champions League',
@@ -25,6 +29,7 @@ export async function getStaticPaths() {
     'mlb': 'MLB',
     'motogp': 'MotoGP',
     'nhl': 'NHL',
+    'otros': 'Otros Partidos',
   };
 
   const matches = await getMatches();
@@ -50,6 +55,76 @@ function getSportForLeague(slug: string): { sportSlug: string; sportLabel: strin
   return { sportSlug: 'futbol', sportLabel: 'Fútbol' };
 }
 
+// Related leagues for internal linking
+const RELATED_LEAGUES: Record<string, { slug: string; name: string }[]> = {
+  'liga-mx': [
+    { slug: 'copa-libertadores', name: 'Copa Libertadores' },
+    { slug: 'futbol-argentino', name: 'Fútbol Argentino' },
+    { slug: 'mls', name: 'MLS' },
+    { slug: 'liga-betplay', name: 'Liga BetPlay' },
+  ],
+  'futbol-argentino': [
+    { slug: 'copa-libertadores', name: 'Copa Libertadores' },
+    { slug: 'brasileirao', name: 'Brasileirão' },
+    { slug: 'liga-chilena', name: 'Liga Chilena' },
+    { slug: 'futbol-uruguayo', name: 'Fútbol Uruguayo' },
+  ],
+  'brasileirao': [
+    { slug: 'copa-libertadores', name: 'Copa Libertadores' },
+    { slug: 'futbol-argentino', name: 'Fútbol Argentino' },
+    { slug: 'liga-ecuador', name: 'Liga Pro Ecuador' },
+    { slug: 'copa-sudamericana', name: 'Copa Sudamericana' },
+  ],
+  'liga-chilena': [
+    { slug: 'futbol-argentino', name: 'Fútbol Argentino' },
+    { slug: 'copa-libertadores', name: 'Copa Libertadores' },
+    { slug: 'liga-peru', name: 'Liga 1 Perú' },
+    { slug: 'brasileirao', name: 'Brasileirão' },
+  ],
+  'copa-libertadores': [
+    { slug: 'liga-mx', name: 'Liga MX' },
+    { slug: 'futbol-argentino', name: 'Fútbol Argentino' },
+    { slug: 'brasileirao', name: 'Brasileirão' },
+    { slug: 'copa-sudamericana', name: 'Copa Sudamericana' },
+  ],
+  'laliga': [
+    { slug: 'premier-league', name: 'Premier League' },
+    { slug: 'champions-league', name: 'Champions League' },
+    { slug: 'liga-mx', name: 'Liga MX' },
+    { slug: 'futbol-argentino', name: 'Fútbol Argentino' },
+  ],
+  'premier-league': [
+    { slug: 'laliga', name: 'LaLiga' },
+    { slug: 'champions-league', name: 'Champions League' },
+    { slug: 'mls', name: 'MLS' },
+    { slug: 'brasileirao', name: 'Brasileirão' },
+  ],
+  'nba': [
+    { slug: 'mlb', name: 'MLB' },
+    { slug: 'nhl', name: 'NHL' },
+    { slug: 'liga-mx', name: 'Liga MX' },
+    { slug: 'motogp', name: 'MotoGP' },
+  ],
+  'mlb': [
+    { slug: 'nba', name: 'NBA' },
+    { slug: 'nhl', name: 'NHL' },
+    { slug: 'liga-mx', name: 'Liga MX' },
+    { slug: 'motogp', name: 'MotoGP' },
+  ],
+  'liga-betplay': [
+    { slug: 'copa-libertadores', name: 'Copa Libertadores' },
+    { slug: 'liga-mx', name: 'Liga MX' },
+    { slug: 'liga-ecuador', name: 'Liga Pro Ecuador' },
+    { slug: 'futbol-argentino', name: 'Fútbol Argentino' },
+  ],
+  'liga-peru': [
+    { slug: 'copa-libertadores', name: 'Copa Libertadores' },
+    { slug: 'liga-chilena', name: 'Liga Chilena' },
+    { slug: 'liga-ecuador', name: 'Liga Pro Ecuador' },
+    { slug: 'futbol-argentino', name: 'Fútbol Argentino' },
+  ],
+};
+
 const { leagueName, leagueSlug } = Astro.props;
 const allMatches = await getMatches();
 const matches = allMatches.filter((m) => m.leagueSlug === leagueSlug);
@@ -58,24 +133,41 @@ const { sportSlug, sportLabel } = getSportForLeague(leagueSlug);
 
 const seo = leagueSeo(leagueName, leagueSlug, matches.length);
 if (matches.length === 0) {
-  seo.title = `${leagueName} En Vivo Hoy — Transmisiones Online Gratis | Pirlo TV`;
-  seo.description = `Ver partidos de ${leagueName} en vivo hoy gratis en Pirlo TV. Toda la información de transmisiones, canales y servidores en directo sin registro.`;
+  seo.title = `${leagueName} En Vivo Hoy — Transmisiones Online Gratis | Pirlo TV · Fútbol Libre`;
+  seo.description = `Ver partidos de ${leagueName} en vivo hoy gratis en Pirlo TV. Fútbol libre · Roja directa. Toda la información de transmisiones, canales y servidores en directo sin registro.`;
 }
 
-const schema = breadcrumbSchema([
-  { name: sportLabel, url: `${SITE_URL}/${sportSlug}/` },
-  { name: leagueName, url: `${SITE_URL}/${leagueSlug}/` },
-]);
-
 const faqItems = matches.length > 0 ? [
-  { q: `¿Dónde ver ${leagueName} en vivo?`, a: `Ver ${leagueName} en vivo gratis en Pirlo TV (pirlo-tv.top). Hoy hay ${matches.length} partidos disponibles.` },
+  { q: `¿Dónde ver ${leagueName} en vivo?`, a: `Ver ${leagueName} en vivo gratis en Pirlo TV (pirlo-tv.top). Hoy hay ${matches.length} partidos disponibles. Fútbol libre · Roja directa en vivo.` },
   { q: `¿Qué partidos hay hoy de ${leagueName}?`, a: matches.slice(0, 3).map((m) => `${m.team1} vs ${m.team2} a las ${m.time} UTC`).join(', ') + '. Todos disponibles en directo gratis en Pirlo TV.' },
+  { q: `¿Es gratis ver ${leagueName} en Pirlo TV?`, a: `Sí, completamente gratis. Pirlo TV ofrece ${leagueName} en vivo sin registro, sin suscripción y sin pago. Solo entra a pirlo-tv.top.` },
+  { q: `¿${leagueName} en vivo necesita registro?`, a: `No. Ver ${leagueName} en vivo en Pirlo TV no requiere registro ni datos personales. Accede directamente a pirlo-tv.top y selecciona el partido.` },
 ] : [
-  { q: `¿Dónde ver ${leagueName} en vivo hoy?`, a: `Ver ${leagueName} en vivo gratis en Pirlo TV (pirlo-tv.top). Cuando comience la jornada, podrás ver todos los partidos en directo con múltiples canales y servidores sin registro.` },
+  { q: `¿Dónde ver ${leagueName} en vivo hoy?`, a: `Ver ${leagueName} en vivo gratis en Pirlo TV (pirlo-tv.top). Fútbol libre · Roja directa. Cuando comience la jornada, podrás ver todos los partidos en directo con múltiples canales y servidores sin registro.` },
   { q: `¿Cómo ver las transmisiones de ${leagueName}?`, a: `Para ver ${leagueName} gratis, simplemente entra a pirlo-tv.top en el horario asignado del partido, haz clic en el evento y elige entre los diferentes canales de transmisión disponibles.` },
+  { q: `¿Es gratis ver ${leagueName}?`, a: `Sí, completamente gratis en Pirlo TV. Sin registro, sin suscripción, sin pago.` },
 ];
+
+const relatedLeagues = RELATED_LEAGUES[leagueSlug] || [
+  { slug: 'liga-mx', name: 'Liga MX' },
+  { slug: 'copa-libertadores', name: 'Copa Libertadores' },
+  { slug: 'futbol-argentino', name: 'Fútbol Argentino' },
+  { slug: 'nba', name: 'NBA' },
+];
+
+const schemaArray = [
+  breadcrumbSchema([
+    { name: sportLabel, url: `${SITE_URL}/${sportSlug}/` },
+    { name: leagueName, url: `${SITE_URL}/${leagueSlug}/` },
+  ]),
+  webPageSchema(seo),
+  faqPageSchema(faqItems),
+];
+if (matches.length > 0) {
+  schemaArray.push(itemListSchema(`${leagueName} — Partidos en Vivo`, matches));
+}
 ---
-<Base seo={seo} schema={schema}>
+<Base seo={seo} schema={schemaArray}>
   <Breadcrumb items={[
     { label: sportLabel, href: `/${sportSlug}/` },
     { label: leagueName },
@@ -83,10 +175,20 @@ const faqItems = matches.length > 0 ? [
   
   <h1 class="hero__title" style="margin-bottom:0.5rem;"><span>{leagueName}</span> en Vivo</h1>
   
-  <p style="color:#7a7a9a;font-size:0.9rem;margin-bottom:2rem;">
-    {leagueName} en vivo en Pirlo TV. {matches.length > 0 ? `${matches.length} partidos hoy en directo gratis.` : 'Transmisiones online gratis para todos los partidos de la jornada.'}
-    Múltiples canales en español, inglés y portugués. Pirlo TV · Roja Directa · Tarjeta Roja TV.
+  <p style="color:#7a7a9a;font-size:0.9rem;margin-bottom:1.5rem;">
+    {leagueName} en vivo en Pirlo TV — fútbol libre. {matches.length > 0 ? `${matches.length} partidos hoy en directo gratis.` : 'Transmisiones online gratis para todos los partidos de la jornada.'}
+    Múltiples canales en español. Roja directa · Tarjeta Roja · Pirlo TV.
   </p>
+
+  <!-- SEO text block -->
+  <div style="font-size:0.85rem;color:#5c5c7a;margin-bottom:2rem;line-height:1.7;border-left:2px solid var(--accent);padding-left:0.75rem;">
+    Ver <strong>{leagueName} en vivo gratis</strong> en <strong>Pirlo TV</strong> (pirlo-tv.top).
+    Transmisiones de <strong>{leagueName}</strong> en directo con múltiples canales y servidores en español.
+    También disponible como <a href="/futbol-libre/" style="color:var(--green)">fútbol libre</a>,
+    <a href="/roja-directa-en-vivo/" style="color:var(--accent)">roja directa en vivo</a> y
+    <a href="/tarjeta-roja/" style="color:var(--accent)">tarjeta roja tv</a>.
+    Gratis sin registro.
+  </div>
   
   {matches.length > 0 ? (
     <MatchList matches={matches} groupByLeague={false} />
@@ -99,6 +201,33 @@ const faqItems = matches.length > 0 ? [
       </p>
     </div>
   )}
+
+  <!-- Related leagues -->
+  <h2 class="section-title">🏆 Ligas Relacionadas</h2>
+  <p style="color:#7a7a9a;font-size:0.82rem;margin:-0.5rem 0 1rem;">
+    Si te gusta {leagueName}, también puedes ver estas ligas en vivo gratis en Pirlo TV.
+  </p>
+  <div class="match-grid" style="margin-bottom:1.5rem;">
+    {relatedLeagues.map((rl) => {
+      const rlCount = allMatches.filter(m => m.leagueSlug === rl.slug).length;
+      return (
+        <a href={`/${rl.slug}/`} class="match-card" style="text-decoration:none;">
+          <div class="match-card__teams" style="font-size:0.95rem;">{rl.name}</div>
+          <div class="match-card__league">
+            {rlCount > 0 ? `${rlCount} partidos en vivo` : 'Ver programación'}
+          </div>
+          <div class="match-card__live" style="margin-top:0.25rem;">Ver partidos →</div>
+        </a>
+      );
+    })}
+  </div>
+
+  <!-- Brand links -->
+  <div style="text-align:center;margin-bottom:2rem;">
+    <a href="/futbol-libre/" style="color:var(--green);font-size:0.85rem;font-weight:600;margin-right:1rem;">⚽ Fútbol Libre</a>
+    <a href="/roja-directa-en-vivo/" style="color:var(--accent);font-size:0.85rem;font-weight:600;margin-right:1rem;">🔴 Roja Directa</a>
+    <a href="/hub/" style="color:var(--accent2);font-size:0.85rem;font-weight:600;">🏆 Hub de Ligas</a>
+  </div>
   
   <FaqBlock items={faqItems} />
 </Base>

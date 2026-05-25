@@ -3,7 +3,7 @@
 import Base from '../layouts/Base.astro';
 import MatchList from '../components/MatchList.astro';
 import { getMatches } from '../lib/data';
-import { homeSeo, websiteSchema, breadcrumbSchema } from '../lib/seo';
+import { homeSeo, websiteSchema, breadcrumbSchema, webPageSchema } from '../lib/seo';
 import { SITE_URL } from '../lib/config';
 
 const matches = await getMatches();
@@ -12,6 +12,7 @@ const buildTime = new Date().toLocaleString('es-ES', { timeZone: 'UTC', hour12: 
 
 const schema = [
   websiteSchema(),
+  webPageSchema(seo),
   breadcrumbSchema([{ name: 'Pirlo TV', url: SITE_URL + '/' }]),
 ];
 ---
@@ -20,34 +21,39 @@ const schema = [
     <div class="hero__badges">
       <span class="badge badge--live">● En Vivo</span>
       <span class="badge">Pirlo TV</span>
+      <span class="badge">Fútbol Libre</span>
       <span class="badge">Roja Directa</span>
       <span class="badge">Tarjeta Roja TV</span>
     </div>
     <h1 class="hero__title">
-      <span>Pirlo TV</span> — Deportes en Vivo Gratis
+      <span>Pirlo TV</span> — Fútbol Libre en Vivo Gratis
     </h1>
     <p class="hero__sub">
-      Ver {matches.length} partidos en vivo hoy gratis en Pirlo TV. Fútbol, MLB, NBA, MotoGP y más deportes
-      en directo con múltiples canales en español de forma rápida y sencilla.
+      Ver {matches.length} partidos en vivo hoy gratis en Pirlo TV. Fútbol libre, MLB, NBA, MotoGP y más deportes
+      en directo con múltiples canales en español. Roja directa en vivo · Tarjeta roja TV.
     </p>
     <p class="hero__ts">🔄 Actualizado: {buildTime} UTC</p>
   </section>
 
   <!-- SEO text block (visually subtle but highly crawlable for Bing SEO) -->
-  <div style="font-size:0.85rem;color:#5c5c7a;margin-bottom:2rem;line-height:1.6;border-left:2px solid var(--accent);padding-left:0.75rem;">
-    <strong>Pirlo TV en vivo gratis</strong> es el portal de referencia para ver deportes online. Accede a las transmisiones de 
-    <strong>tarjeta roja futbol en vivo gratis pirlo</strong> y los streams oficiales de <strong>roja directa pirlo tv</strong>. 
-    Disfruta de todos los partidos de fútbol, incluyendo la Liga MX, Copa Libertadores, Copa Sudamericana, Fútbol Argentino, Brasileirão y LaLiga. 
-    También transmitimos <strong>pirlo tv motogp</strong> en directo, carreras de motos y <strong>pirlo tv nba hoy</strong> en vivo, 
-    así como todo el béisbol en <strong>pirlo tv mlb</strong> hoy. Todo en pirlo-tv.top, tu alternativa estable a www.pirlotv.es gratis en directo.
+  <div style="font-size:0.85rem;color:#5c5c7a;margin-bottom:2rem;line-height:1.7;border-left:2px solid var(--accent);padding-left:0.75rem;">
+    <strong>Pirlo TV en vivo gratis</strong> es el portal de referencia para ver <strong>fútbol libre en vivo</strong> por internet.
+    Accede a las transmisiones de <strong>roja directa en vivo</strong> (rojadirecta) y los streams de
+    <strong>tarjeta roja futbol en vivo gratis pirlo</strong>.
+    Disfruta de todos los partidos de fútbol en vivo: <strong>Liga MX en vivo</strong>, Copa Libertadores,
+    Copa Sudamericana, <strong>Fútbol Argentino</strong>, Brasileirão, Liga Chilena, Liga BetPlay colombiana, Liga 1 Perú y LaLiga.
+    También transmitimos <strong>pirlo tv motogp</strong> en directo, carreras de motos y <strong>pirlo tv nba hoy</strong> en vivo,
+    así como todo el béisbol en <strong>pirlo tv mlb</strong> hoy.
+    Todo en pirlo-tv.top, tu alternativa estable a <strong>futbol libre</strong>, <strong>rojadirecta en vivo</strong> y www.pirlotv.es gratis en directo.
   </div>
 
   <MatchList matches={matches} groupByLeague={true} />
 
   <!-- Competition Hub links -->
-  <h2 class="section-title">🏆 Hub de Competiciones</h2>
+  <h2 class="section-title">🏆 Hub de Competiciones — Fútbol Libre</h2>
   <p style="color:#7a7a9a;font-size:0.85rem;margin:-0.5rem 0 1.25rem;">
     Explora todas las ligas disponibles. Enfoque especial en fútbol de Latinoamérica y torneos mundiales.
+    Fútbol libre en vivo con roja directa.
   </p>
   <div class="match-grid" style="margin-bottom:1.5rem;">
     {[
@@ -56,6 +62,9 @@ const schema = [
       { href: '/futbol-argentino/',  label: '🇦🇷 Fútbol Argentino',   sub: 'Liga Profesional · Copa Argentina' },
       { href: '/brasileirao/',       label: '🇧🇷 Brasileirão',        sub: 'Serie A de Brasil en directo' },
       { href: '/liga-chilena/',      label: '🇨🇱 Liga Chilena',       sub: 'Campeonato Nacional chileno' },
+      { href: '/liga-betplay/',      label: '🇨🇴 Liga BetPlay',       sub: 'Fútbol colombiano en vivo' },
+      { href: '/liga-peru/',         label: '🇵🇪 Liga 1 Perú',        sub: 'Fútbol peruano en directo' },
+      { href: '/liga-ecuador/',      label: '🇪🇨 Liga Pro Ecuador',   sub: 'LigaPro ecuatoriana en vivo' },
       { href: '/laliga/',            label: '🇪🇸 LaLiga',             sub: 'Real Madrid y Barcelona hoy' },
       { href: '/nba/',               label: '🏀 NBA',                sub: 'Pirlo TV NBA en vivo hoy' },
       { href: '/mlb/',               label: '⚾ MLB',                sub: 'Béisbol de Grandes Ligas gratis' },
@@ -79,9 +88,12 @@ const schema = [
   <h2 class="section-title">Accesos Directos</h2>
   <div class="match-grid">
     {[
-      { href: '/pirlo-tv/',              label: '⚡ Pirlo TV',                sub: 'pirlotv · pirlo tv en vivo' },
-      { href: '/tarjeta-roja/',          label: '🟥 Tarjeta Roja TV',         sub: 'tarjeta roja en vivo gratis' },
-      { href: '/roja-directa-pirlo-tv/', label: '🔴 Roja Directa Pirlo TV',   sub: 'roja directa pirlo tv' },
+      { href: '/futbol-libre/',          label: '⚽ Fútbol Libre',          sub: 'futbol libre · futbol libre en vivo' },
+      { href: '/roja-directa-en-vivo/',  label: '🔴 Roja Directa en Vivo', sub: 'rojadirecta · roja directa en vivo' },
+      { href: '/futbol-en-vivo/',        label: '📺 Fútbol en Vivo',       sub: 'futbol en vivo hoy · ver futbol gratis' },
+      { href: '/pirlo-tv/',              label: '⚡ Pirlo TV',              sub: 'pirlotv · pirlo tv en vivo' },
+      { href: '/tarjeta-roja/',          label: '🟥 Tarjeta Roja TV',      sub: 'tarjeta roja en vivo gratis' },
+      { href: '/roja-directa-pirlo-tv/', label: '🔴 Roja Directa Pirlo TV', sub: 'roja directa pirlo tv' },
     ].map((b) => (
       <a href={b.href} class="match-card" style="text-decoration:none;">
         <div class="match-card__teams" style="font-size:0.95rem;">{b.label}</div>

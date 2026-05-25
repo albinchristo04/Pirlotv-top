@@ -4,7 +4,7 @@ export const DATA_URL =
   'https://sportsonline.ppvtv.top/api/matches.json';
 export const SITE_URL = 'https://pirlo-tv.top';
 export const SITE_NAME = 'Pirlo TV';
-export const SITE_TAGLINE = 'Pirlo TV — Roja Directa · Tarjeta Roja TV';
+export const SITE_TAGLINE = 'Pirlo TV — Roja Directa · Tarjeta Roja TV · Fútbol Libre';
 export const INDEXNOW_KEY = import.meta.env.INDEXNOW_KEY ?? '';
 export const REBUILD_INTERVAL_HOURS = 3;
 
@@ -36,6 +36,12 @@ export const SPORT_MAP: Record<string, { sport: string; sportSlug: string; leagu
   'NRL':                 { sport: 'Rugby',  sportSlug: 'deportes', leagueSlug: 'nrl' },
   'WNBA':                { sport: 'Baloncesto', sportSlug: 'nba', leagueSlug: 'wnba' },
 
+  // Latin American leagues
+  'Liga BetPlay':        { sport: 'Fútbol', sportSlug: 'futbol', leagueSlug: 'liga-betplay' },
+  'Liga 1 Perú':         { sport: 'Fútbol', sportSlug: 'futbol', leagueSlug: 'liga-peru' },
+  'Primera División Uruguay': { sport: 'Fútbol', sportSlug: 'futbol', leagueSlug: 'futbol-uruguayo' },
+  'División Profesional Paraguay': { sport: 'Fútbol', sportSlug: 'futbol', leagueSlug: 'futbol-paraguayo' },
+
   // Category name fallbacks (used when tag is a channel name like FOX, NBC, etc.)
   'Baseball':            { sport: 'Béisbol',    sportSlug: 'mlb', leagueSlug: 'mlb' },
   'Basketball':          { sport: 'Baloncesto', sportSlug: 'nba', leagueSlug: 'nba' },
@@ -57,3 +63,6 @@ export const LANG_LABELS: Record<string, string> = {
   us: 'Inglés (US)',
   pt: 'Portugués',
 };
+
+/** Latin American keywords for SEO reuse across pages */
+export const LATAM_KEYWORDS = 'pirlo tv, pirlotv, pirlo tv en vivo, futbol libre, futbol libre en vivo, fútbol libre, roja directa, roja directa en vivo, rojadirecta, rojadirecta en vivo, tarjeta roja tv, tarjeta roja en vivo gratis, pirlo tv futbol en vivo, ver futbol gratis, futbol en vivo hoy, pirlo tv gratis, pirlo tv en directo, pirlo tv online, pirlo tv deportes en vivo';

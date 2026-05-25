@@ -1,0 +1,111 @@
+---
+// src/pages/futbol-libre.astro
+import Base from '../layouts/Base.astro';
+import MatchList from '../components/MatchList.astro';
+import FaqBlock from '../components/FaqBlock.astro';
+import { getMatches } from '../lib/data';
+import { brandPageSeo, websiteSchema, breadcrumbSchema, webPageSchema, faqPageSchema } from '../lib/seo';
+import { SITE_URL } from '../lib/config';
+
+const allMatches = await getMatches();
+const futbolMatches = allMatches.filter(m => m.sportSlug === 'futbol');
+const seo = brandPageSeo('Fútbol Libre', 'futbol-libre', allMatches.length);
+
+const faqItems = [
+  { q: '¿Qué es Fútbol Libre?', a: 'Fútbol Libre es la forma más buscada de ver partidos de fútbol en vivo gratis por internet. En Pirlo TV (pirlo-tv.top) puedes acceder a todas las transmisiones de fútbol libre en vivo sin registro y sin pago. Liga MX, Copa Libertadores, Fútbol Argentino, Brasileirão, LaLiga y más.' },
+  { q: '¿Dónde ver fútbol libre en vivo gratis?', a: `Ver fútbol libre en vivo gratis en Pirlo TV (pirlo-tv.top). Hoy hay ${futbolMatches.length} partidos de fútbol disponibles en directo con múltiples canales en español. Sin registro.` },
+  { q: '¿Fútbol libre tiene Liga MX?', a: 'Sí. En Pirlo TV puedes ver Liga MX en vivo gratis, incluyendo todos los equipos: Cruz Azul, Pumas, Chivas, América, Monterrey, Tigres y más. También la Liguilla y finales de Liga MX.' },
+  { q: '¿Fútbol libre tiene Copa Libertadores?', a: 'Sí. La Copa Libertadores de América se transmite en vivo gratis en Pirlo TV. Todos los partidos de la fase de grupos, octavos, cuartos, semifinal y final.' },
+  { q: '¿Es gratis ver fútbol libre en Pirlo TV?', a: 'Sí, completamente gratis. Pirlo TV ofrece fútbol libre en vivo sin registro, sin suscripción y sin pago. Solo entra a pirlo-tv.top y selecciona el partido.' },
+  { q: '¿Fútbol libre o Roja Directa?', a: 'Fútbol Libre y Roja Directa son nombres alternativos para plataformas de streaming deportivo. En Pirlo TV (pirlo-tv.top) accedes a los mismos partidos con múltiples canales y servidores. Es lo mejor de fútbol libre y roja directa en un solo sitio.' },
+];
+
+const schema = [
+  websiteSchema(),
+  webPageSchema(seo),
+  faqPageSchema(faqItems),
+  breadcrumbSchema([
+    { name: 'Fútbol Libre', url: SITE_URL + '/futbol-libre/' },
+  ]),
+];
+---
+<Base seo={seo} schema={schema}>
+  <div style="max-width:900px;margin:0 auto;">
+    <div class="hero" style="margin-bottom:2rem;">
+      <div class="hero__badges">
+        <span class="badge badge--live">● Fútbol Libre</span>
+        <span class="badge">futbol libre en vivo</span>
+        <span class="badge">fútbol libre gratis</span>
+        <span class="badge">Pirlo TV</span>
+        <span class="badge">Roja Directa</span>
+      </div>
+      <h1 class="hero__title">⚽ <span>Fútbol Libre</span> — Ver Partidos en Vivo Gratis</h1>
+      <p class="hero__sub">
+        Fútbol Libre en vivo gratis en Pirlo TV. {futbolMatches.length} partidos de fútbol disponibles hoy en directo.
+        Liga MX, Copa Libertadores, Fútbol Argentino, Brasileirão, LaLiga y más ligas de Latinoamérica.
+        Sin registro, sin pago — todo gratis.
+      </p>
+    </div>
+
+    <!-- SEO text block -->
+    <div style="font-size:0.85rem;color:#5c5c7a;margin-bottom:2rem;line-height:1.7;border-left:2px solid var(--green);padding-left:0.75rem;">
+      <strong>Fútbol libre en vivo</strong> es la mejor manera de ver partidos de fútbol gratis por internet.
+      En <strong>Pirlo TV</strong> (pirlo-tv.top) ofrecemos transmisiones de <strong>fútbol libre en vivo gratis</strong> de las mejores ligas del mundo.
+      Disfruta de la <strong>Liga MX en vivo</strong>, <strong>Copa Libertadores en vivo</strong>,
+      <strong>Fútbol Argentino en directo</strong>, <strong>Brasileirão online</strong> y <strong>LaLiga en vivo</strong>.
+      También conocido como <a href="/roja-directa-en-vivo/" style="color:var(--accent)">roja directa en vivo</a>,
+      <a href="/tarjeta-roja/" style="color:var(--accent)">tarjeta roja tv</a> y
+      <a href="/pirlo-tv/" style="color:var(--accent)">pirlo tv</a>.
+      Todo en español, con múltiples canales y servidores para cada partido.
+    </div>
+
+    <!-- LATAM League Hub links -->
+    <h2 class="section-title">🏆 Ligas Disponibles en Fútbol Libre</h2>
+    <div class="match-grid" style="margin-bottom:2rem;">
+      {[
+        { href: '/liga-mx/',           label: '🇲🇽 Liga MX',            sub: 'Fútbol mexicano en vivo gratis' },
+        { href: '/copa-libertadores/', label: '🏆 Copa Libertadores',   sub: 'Libertadores de América en vivo' },
+        { href: '/futbol-argentino/',  label: '🇦🇷 Fútbol Argentino',   sub: 'Liga Profesional Argentina' },
+        { href: '/brasileirao/',       label: '🇧🇷 Brasileirão',        sub: 'Serie A de Brasil en directo' },
+        { href: '/liga-chilena/',      label: '🇨🇱 Liga Chilena',       sub: 'Primera División de Chile' },
+        { href: '/laliga/',            label: '🇪🇸 LaLiga',             sub: 'Real Madrid, Barcelona en vivo' },
+        { href: '/liga-betplay/',      label: '🇨🇴 Liga BetPlay',       sub: 'Fútbol colombiano en vivo' },
+        { href: '/liga-peru/',         label: '🇵🇪 Liga 1 Perú',        sub: 'Fútbol peruano en directo' },
+      ].map((hub) => (
+        <a href={hub.href} class="match-card" style="text-decoration:none;">
+          <div class="match-card__teams" style="font-size:0.95rem;">{hub.label}</div>
+          <div class="match-card__league">{hub.sub}</div>
+          <div class="match-card__live" style="margin-top:0.25rem;">Ver partidos →</div>
+        </a>
+      ))}
+    </div>
+
+    <h2 class="section-title">⚽ Partidos de Fútbol Libre Hoy</h2>
+    <MatchList matches={futbolMatches} groupByLeague={true} />
+
+    {allMatches.length > futbolMatches.length && (
+      <>
+        <h2 class="section-title">🏀 Otros Deportes en Vivo</h2>
+        <p style="color:#7a7a9a;font-size:0.85rem;margin:-0.5rem 0 1rem;">
+          Además de fútbol libre, en Pirlo TV también transmitimos NBA, MLB, MotoGP y más deportes.
+        </p>
+        <div class="match-grid" style="margin-bottom:2rem;">
+          {[
+            { href: '/nba/',    label: '🏀 NBA',     sub: 'Baloncesto en vivo hoy' },
+            { href: '/mlb/',    label: '⚾ MLB',     sub: 'Béisbol de Grandes Ligas' },
+            { href: '/motogp/', label: '🏍 MotoGP',   sub: 'Carreras de motos en directo' },
+            { href: '/nhl/',    label: '🏒 NHL',     sub: 'Hockey sobre hielo en vivo' },
+          ].map((s) => (
+            <a href={s.href} class="match-card" style="text-decoration:none;">
+              <div class="match-card__teams" style="font-size:0.95rem;">{s.label}</div>
+              <div class="match-card__league">{s.sub}</div>
+              <div class="match-card__live" style="margin-top:0.25rem;">Ver →</div>
+            </a>
+          ))}
+        </div>
+      </>
+    )}
+
+    <FaqBlock items={faqItems} />
+  </div>
+</Base>

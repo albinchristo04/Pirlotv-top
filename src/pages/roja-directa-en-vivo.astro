@@ -1,0 +1,87 @@
+---
+// src/pages/roja-directa-en-vivo.astro
+import Base from '../layouts/Base.astro';
+import MatchList from '../components/MatchList.astro';
+import FaqBlock from '../components/FaqBlock.astro';
+import { getMatches } from '../lib/data';
+import { brandPageSeo, websiteSchema, breadcrumbSchema, webPageSchema, faqPageSchema } from '../lib/seo';
+import { SITE_URL } from '../lib/config';
+
+const matches = await getMatches();
+const seo = brandPageSeo('Roja Directa en Vivo', 'roja-directa-en-vivo', matches.length);
+
+const faqItems = [
+  { q: '¿Qué es Roja Directa en Vivo?', a: 'Roja Directa en Vivo (también escrito RojaDirecta) es uno de los nombres más buscados para ver deportes en vivo gratis por internet. En Pirlo TV (pirlo-tv.top) puedes acceder a todas las transmisiones de roja directa en vivo: fútbol, béisbol, baloncesto, hockey y MotoGP.' },
+  { q: '¿Dónde ver roja directa en vivo gratis?', a: `Ver roja directa en vivo gratis en Pirlo TV (pirlo-tv.top). ${matches.length} partidos disponibles hoy con múltiples canales y servidores en español. Sin registro.` },
+  { q: '¿Rojadirecta en vivo tiene fútbol?', a: 'Sí. Roja Directa en Pirlo TV ofrece todos los partidos de fútbol en vivo: Liga MX, Copa Libertadores, Fútbol Argentino, Brasileirão, LaLiga, Premier League y más. Gratis sin registro.' },
+  { q: '¿Roja Directa o Pirlo TV?', a: 'Roja Directa y Pirlo TV ofrecen el mismo contenido en pirlo-tv.top. Accede desde /roja-directa-en-vivo/ o /pirlo-tv/ — mismos partidos, mismos canales, mismos servidores.' },
+  { q: '¿Es seguro ver roja directa en vivo?', a: 'Pirlo TV (pirlo-tv.top) es un directorio de streams. No alojamos contenido de vídeo. Los streams son proporcionados por terceros. El sitio es gratuito y no requiere registro ni datos personales.' },
+  { q: '¿RojaDirecta tiene NBA y MLB?', a: `Sí. En Pirlo TV puedes ver NBA en vivo, MLB en vivo y más deportes además de fútbol. ${matches.length} partidos disponibles hoy.` },
+];
+
+const schema = [
+  websiteSchema(),
+  webPageSchema(seo),
+  faqPageSchema(faqItems),
+  breadcrumbSchema([
+    { name: 'Roja Directa en Vivo', url: SITE_URL + '/roja-directa-en-vivo/' },
+  ]),
+];
+---
+<Base seo={seo} schema={schema}>
+  <div style="max-width:900px;margin:0 auto;">
+    <div class="hero" style="margin-bottom:2rem;">
+      <div class="hero__badges">
+        <span class="badge badge--live">● Roja Directa</span>
+        <span class="badge">roja directa en vivo</span>
+        <span class="badge">rojadirecta en vivo</span>
+        <span class="badge">rojadirecta gratis</span>
+        <span class="badge">Pirlo TV</span>
+      </div>
+      <h1 class="hero__title">🔴 <span>Roja Directa en Vivo</span> — Deportes Gratis Hoy</h1>
+      <p class="hero__sub">
+        Roja Directa en vivo gratis en Pirlo TV. {matches.length} partidos disponibles hoy en directo.
+        RojaDirecta — Fútbol, NBA, MLB, NHL, MotoGP y más deportes con múltiples canales en español.
+        Sin registro, sin suscripción — todo gratis.
+      </p>
+    </div>
+
+    <!-- SEO text block -->
+    <div style="font-size:0.85rem;color:#5c5c7a;margin-bottom:2rem;line-height:1.7;border-left:2px solid var(--accent);padding-left:0.75rem;">
+      <strong>Roja directa en vivo</strong> (rojadirecta) es uno de los términos más buscados en español para ver deportes gratis.
+      En <strong>Pirlo TV</strong> (pirlo-tv.top) ofrecemos todas las transmisiones de <strong>roja directa en vivo gratis</strong>:
+      <strong>fútbol en vivo</strong> de Liga MX, Copa Libertadores, Fútbol Argentino, Brasileirão y LaLiga;
+      <strong>NBA en vivo</strong>, <strong>MLB en vivo</strong>, <strong>MotoGP en directo</strong> y más.
+      También conocido como <a href="/futbol-libre/" style="color:var(--green)">fútbol libre</a>,
+      <a href="/tarjeta-roja/" style="color:var(--accent)">tarjeta roja tv</a> y
+      <a href="/pirlo-tv/" style="color:var(--accent)">pirlo tv</a>.
+    </div>
+
+    <!-- All-sports hub -->
+    <h2 class="section-title">🏆 Deportes Disponibles en Roja Directa</h2>
+    <div class="match-grid" style="margin-bottom:2rem;">
+      {[
+        { href: '/futbol-libre/',      label: '⚽ Fútbol Libre',        sub: 'Todos los partidos de fútbol gratis' },
+        { href: '/liga-mx/',           label: '🇲🇽 Liga MX',            sub: 'Fútbol mexicano en vivo' },
+        { href: '/copa-libertadores/', label: '🏆 Copa Libertadores',   sub: 'Libertadores de América' },
+        { href: '/futbol-argentino/',  label: '🇦🇷 Fútbol Argentino',   sub: 'Liga Profesional Argentina' },
+        { href: '/brasileirao/',       label: '🇧🇷 Brasileirão',        sub: 'Serie A de Brasil' },
+        { href: '/laliga/',            label: '🇪🇸 LaLiga',             sub: 'Real Madrid, Barcelona' },
+        { href: '/nba/',               label: '🏀 NBA',                sub: 'Baloncesto en vivo hoy' },
+        { href: '/mlb/',               label: '⚾ MLB',                sub: 'Béisbol de Grandes Ligas' },
+        { href: '/motogp/',            label: '🏍 MotoGP',              sub: 'Carreras en directo' },
+      ].map((hub) => (
+        <a href={hub.href} class="match-card" style="text-decoration:none;">
+          <div class="match-card__teams" style="font-size:0.95rem;">{hub.label}</div>
+          <div class="match-card__league">{hub.sub}</div>
+          <div class="match-card__live" style="margin-top:0.25rem;">Ver partidos →</div>
+        </a>
+      ))}
+    </div>
+
+    <h2 class="section-title">📺 Todos los Partidos en Vivo Hoy — Roja Directa</h2>
+    <MatchList matches={matches} groupByLeague={true} />
+
+    <FaqBlock items={faqItems} />
+  </div>
+</Base>

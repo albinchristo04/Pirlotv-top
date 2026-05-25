@@ -2,7 +2,7 @@
 // src/layouts/Base.astro
 import '../styles/global.css';
 import type { SeoMeta } from '../lib/seo';
-import { SITE_NAME, SITE_URL } from '../lib/config';
+import { SITE_NAME, SITE_URL, LATAM_KEYWORDS } from '../lib/config';
 
 interface Props {
   seo: SeoMeta;
@@ -20,9 +20,27 @@ const buildTime = new Date().toISOString();
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{seo.title}</title>
   <meta name="description" content={seo.description} />
-  <meta name="keywords" content="pirlo tv, pirlotv, pirlo tv en vivo, pirlo tv futbol en vivo, roja directa, roja directa en vivo, tarjeta roja tv, futbol en vivo, rojadirecta, pirlo.tv, pirlo tv online, pirlo tv gratis" />
+  <meta name="keywords" content={LATAM_KEYWORDS} />
   <link rel="canonical" href={seo.canonical} />
-  <meta name="robots" content="index, follow" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+
+  <!-- Bing-specific meta tags -->
+  <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <meta name="msnbot" content="index, follow" />
+
+  <!-- Language & Locale for Bing -->
+  <meta name="language" content="es" />
+  <meta name="geo.region" content="MX" />
+  <meta name="geo.placename" content="México" />
+  <meta http-equiv="content-language" content="es" />
+  <link rel="alternate" hreflang="es" href={seo.canonical} />
+  <link rel="alternate" hreflang="x-default" href={seo.canonical} />
+
+  <!-- AI Citation meta tags (Copilot, ChatGPT, Perplexity) -->
+  <meta name="citation_title" content={seo.title} />
+  <meta name="citation_site_title" content="Pirlo TV" />
+  <meta name="citation_language" content="es" />
+  <meta name="citation_public_url" content={seo.canonical} />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
@@ -30,6 +48,7 @@ const buildTime = new Date().toISOString();
   <meta property="og:title" content={seo.ogTitle} />
   <meta property="og:description" content={seo.ogDescription} />
   <meta property="og:url" content={seo.canonical} />
+  <meta property="og:locale" content="es_MX" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary" />
@@ -63,12 +82,14 @@ const buildTime = new Date().toISOString();
       <a href="/" class="nav__logo" aria-label="Pirlo TV — Inicio">⚡ Pirlo TV</a>
       <div class="nav__links" role="menubar">
         <a href="/hub/" class="nav__link" role="menuitem" style="color:var(--accent2); font-weight:700;">🏆 Hub de Ligas</a>
+        <a href="/futbol-libre/" class="nav__link" role="menuitem" style="color:var(--green); font-weight:600;">⚽ Fútbol Libre</a>
         <a href="/futbol/" class="nav__link" role="menuitem">Fútbol</a>
         <a href="/mlb/" class="nav__link" role="menuitem">MLB</a>
         <a href="/nba/" class="nav__link" role="menuitem">NBA</a>
         <a href="/motogp/" class="nav__link" role="menuitem">MotoGP</a>
         <a href="/pirlo-tv/" class="nav__link nav__link--brand" role="menuitem">Pirlo TV</a>
         <a href="/tarjeta-roja/" class="nav__link nav__link--brand" role="menuitem">Tarjeta Roja</a>
+        <a href="/roja-directa-en-vivo/" class="nav__link nav__link--brand" role="menuitem">Roja Directa</a>
       </div>
     </div>
   </nav>
@@ -81,15 +102,23 @@ const buildTime = new Date().toISOString();
 
   <footer class="footer" aria-label="Pie de página">
     <div class="footer__inner">
-      <div class="footer__logo">⚡ Pirlo TV</div>
+      <div class="footer__logo">⚡ Pirlo TV — Fútbol Libre en Vivo</div>
       <nav class="footer__links" aria-label="Enlaces del pie de página">
         <a href="/" class="footer__link">Inicio</a>
         <a href="/hub/" class="footer__link" style="color:var(--accent2); font-weight:700;">🏆 Hub de Ligas</a>
+        <a href="/futbol-libre/" class="footer__link" style="color:var(--green); font-weight:600;">Fútbol Libre</a>
+        <a href="/roja-directa-en-vivo/" class="footer__link">Roja Directa en Vivo</a>
+        <a href="/futbol-en-vivo/" class="footer__link">Fútbol en Vivo</a>
         <a href="/liga-mx/" class="footer__link">Liga MX</a>
         <a href="/futbol-argentino/" class="footer__link">Fútbol Argentino</a>
         <a href="/brasileirao/" class="footer__link">Brasileirão</a>
         <a href="/liga-chilena/" class="footer__link">Liga Chilena</a>
+        <a href="/liga-ecuador/" class="footer__link">Liga Pro Ecuador</a>
+        <a href="/liga-betplay/" class="footer__link">Liga BetPlay</a>
+        <a href="/liga-peru/" class="footer__link">Liga 1 Perú</a>
+        <a href="/futbol-uruguayo/" class="footer__link">Fútbol Uruguayo</a>
         <a href="/copa-libertadores/" class="footer__link">Copa Libertadores</a>
+        <a href="/copa-sudamericana/" class="footer__link">Copa Sudamericana</a>
         <a href="/laliga/" class="footer__link">LaLiga</a>
         <a href="/premier-league/" class="footer__link">Premier League</a>
         <a href="/nba/" class="footer__link">NBA</a>
@@ -100,9 +129,10 @@ const buildTime = new Date().toISOString();
         <a href="/roja-directa-pirlo-tv/" class="footer__link">Roja Directa Pirlo TV</a>
       </nav>
       <p class="footer__disclaimer">
-        Pirlo TV es un directorio de streams deportivos. No alojamos ningún contenido de vídeo.
+        Pirlo TV (pirlo-tv.top) es un directorio de streams deportivos en vivo. No alojamos ningún contenido de vídeo.
         Todos los streams son proporcionados por terceros. Este sitio no tiene afiliación con ninguna
-        liga, club o emisora. Todos los derechos pertenecen a sus respectivos propietarios.
+        liga, club o emisora. También conocido como Fútbol Libre, Roja Directa, RojaDirecta y Tarjeta Roja TV.
+        Todos los derechos pertenecen a sus respectivos propietarios.
         &copy; {new Date().getFullYear()} pirlo-tv.top
       </p>
     </div>

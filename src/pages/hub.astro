@@ -2,7 +2,9 @@
 // src/pages/hub.astro
 import Base from '../layouts/Base.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
+import MatchCard from '../components/MatchCard.astro';
 import { getMatches } from '../lib/data';
+import { hubSeo, webPageSchema, breadcrumbSchema, itemListSchema } from '../lib/seo';
 import { SITE_URL } from '../lib/config';
 
 const matches = await getMatches();
@@ -15,6 +17,10 @@ const latamLeagues = [
   { slug: 'brasileirao', name: 'Brasileirão', desc: 'Serie A del fútbol de Brasil, Palmeiras, Flamengo, São Paulo y Corinthians.', emoji: '🇧🇷' },
   { slug: 'liga-chilena', name: 'Liga Chilena', desc: 'Primera División de Chile, Colo Colo, Universidad de Chile y U. Católica.', emoji: '🇨🇱' },
   { slug: 'liga-ecuador', name: 'Liga Pro Ecuador', desc: 'Fútbol de Ecuador en vivo, Liga de Quito, Emelec y Barcelona SC.', emoji: '🇪🇨' },
+  { slug: 'liga-betplay', name: 'Liga BetPlay', desc: 'Fútbol colombiano en vivo: Millonarios, Atlético Nacional, América de Cali.', emoji: '🇨🇴' },
+  { slug: 'liga-peru', name: 'Liga 1 Perú', desc: 'Fútbol peruano: Alianza Lima, Universitario, Sporting Cristal en directo.', emoji: '🇵🇪' },
+  { slug: 'futbol-uruguayo', name: 'Primera División Uruguay', desc: 'Fútbol uruguayo: Peñarol, Nacional, Defensor Sporting en vivo.', emoji: '🇺🇾' },
+  { slug: 'futbol-paraguayo', name: 'División Profesional Paraguay', desc: 'Fútbol paraguayo: Olimpia, Cerro Porteño, Libertad en directo.', emoji: '🇵🇾' },
 ];
 
 const globalLeagues = [
@@ -28,93 +34,131 @@ const globalLeagues = [
   { slug: 'nhl', name: 'NHL', desc: 'Partidos de hockey sobre hielo de la NHL en vivo hoy gratis.', emoji: '🏒' },
 ];
 
-// Helper to count active matches for a league
-const getActiveCount = (slug: string) => matches.filter(m => m.leagueSlug === slug).length;
+// Helper to get matches for a league
+const getLeagueMatches = (slug: string) => matches.filter(m => m.leagueSlug === slug);
 
-const seo = {
-  title: 'Hub de Competiciones en Vivo — Ligas de Latinoamérica y Mundo | Pirlo TV',
-  description: 'Accede al Hub de Competiciones en Pirlo TV. Ver Liga MX, Copa Libertadores, Fútbol Argentino, Brasileirão, LaLiga, NBA, MLB y MotoGP en vivo gratis en español.',
-  canonical: SITE_URL + '/hub/',
-  ogTitle: 'Hub de Competiciones en Vivo — Pirlo TV',
-  ogDescription: 'Las ligas más importantes en un solo lugar. Enfoque especial en ligas latinoamericanas. Fútbol, NBA, MLB, MotoGP gratis.',
-};
+const seo = hubSeo(matches.length);
+
+const schema = [
+  webPageSchema(seo),
+  breadcrumbSchema([{ name: '🏆 Hub de Competiciones', url: SITE_URL + '/hub/' }]),
+  itemListSchema('Partidos en Vivo Hoy', matches),
+];
 ---
-<Base seo={seo}>
+<Base seo={seo} schema={schema}>
   <Breadcrumb items={[{ label: '🏆 Hub de Competiciones' }]} />
 
   <section class="hero" style="margin-bottom: 2rem;">
     <div class="hero__badges">
-      <span class="badge badge--live">● Competiciones</span>
+      <span class="badge badge--live">● {matches.length} Partidos</span>
       <span class="badge">Liga MX</span>
       <span class="badge">Libertadores</span>
       <span class="badge">Fútbol Argentino</span>
       <span class="badge">NBA</span>
       <span class="badge">MLB</span>
+      <span class="badge">Fútbol Libre</span>
     </div>
     <h1 class="hero__title">🏆 <span>Hub de Competiciones</span> en Vivo</h1>
     <p class="hero__sub">
-      Sigue todos los partidos y carreras de tus ligas preferidas. Acceso a transmisiones gratuitas en vivo
-      con múltiples canales en español. Enfoque especial en ligas latinoamericanas y torneos internacionales.
+      Sigue {matches.length} partidos y carreras en vivo de tus ligas preferidas. Fútbol libre gratis con
+      múltiples canales en español. Enfoque especial en ligas latinoamericanas y torneos internacionales.
+      Roja directa · Tarjeta roja · Pirlo TV.
     </p>
   </section>
+
+  <!-- SEO text block -->
+  <div style="font-size:0.85rem;color:#5c5c7a;margin-bottom:2rem;line-height:1.7;border-left:2px solid var(--accent2);padding-left:0.75rem;">
+    El <strong>Hub de Competiciones</strong> de <strong>Pirlo TV</strong> reúne todas las ligas en un solo lugar.
+    Ver <strong>fútbol libre en vivo</strong> de Liga MX, Copa Libertadores, Fútbol Argentino, Brasileirão, Liga BetPlay colombiana,
+    Liga 1 Perú y más. También <strong>roja directa en vivo</strong> con NBA, MLB, MotoGP y NHL.
+    Todo en español, gratis y sin registro.
+  </div>
 
   <!-- Latin American leagues section -->
   <h2 class="section-title">🏆 Ligas Latinoamericanas</h2>
   <p style="color:#7a7a9a;font-size:0.85rem;margin:-0.5rem 0 1.5rem;">
-    Transmisiones de fútbol latinoamericano hoy gratis. Cobertura de la Liga MX, Copa Libertadores de América y copas locales.
+    Transmisiones de fútbol latinoamericano hoy gratis. Liga MX, Copa Libertadores, Fútbol Argentino, Brasileirão, Liga BetPlay, Liga 1 Perú y más.
   </p>
   
-  <div class="match-grid" style="margin-bottom: 3rem;">
-    {latamLeagues.map((l) => {
-      const count = getActiveCount(l.slug);
-      return (
-        <a href={`/${l.slug}/`} class="match-card" style="text-decoration:none;">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div class="match-card__league" style="font-size: 0.95rem; font-weight: 700; color: var(--text);">
-              {l.emoji} {l.name}
-            </div>
-            {count > 0 ? (
-              <span class="match-card__live" style="font-size: 0.72rem;">{count} en vivo</span>
-            ) : (
-              <span style="font-size:0.72rem; color:var(--muted);">Programado</span>
-            )}
+  {latamLeagues.map((l) => {
+    const leagueMatches = getLeagueMatches(l.slug);
+    return (
+      <>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; margin-top:1.5rem;">
+          <h3 style="font-size:0.95rem; font-weight:700; color:var(--text); margin:0;">
+            {l.emoji} {l.name}
+          </h3>
+          <a href={`/${l.slug}/`} style="font-size:0.75rem; color:var(--accent); font-weight:600; text-decoration:none;">
+            {leagueMatches.length > 0 ? `${leagueMatches.length} en vivo →` : 'Ver todos →'}
+          </a>
+        </div>
+        <p style="font-size:0.78rem; color:var(--muted); margin:0 0 0.75rem;">{l.desc}</p>
+        {leagueMatches.length > 0 ? (
+          <div class="match-grid" style="margin-bottom:0.5rem;">
+            {leagueMatches.slice(0, 3).map((m) => (
+              <MatchCard match={m} />
+            ))}
           </div>
-          <div class="match-card__teams" style="font-size: 0.8rem; font-weight: 400; color: var(--muted); margin-top: 0.5rem; line-height: 1.4;">
-            {l.desc}
+        ) : (
+          <div style="font-size:0.78rem; color:var(--muted); padding:0.75rem; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:0.5rem;">
+            📅 No hay partidos programados hoy. <a href={`/${l.slug}/`} style="color:var(--accent)">Ver calendario →</a>
           </div>
-          <div class="match-card__live" style="margin-top:0.75rem; font-size:0.75rem;">Ver partidos →</div>
-        </a>
-      );
-    })}
-  </div>
+        )}
+      </>
+    );
+  })}
+
+  <div style="border-top:1px solid var(--border); margin:2.5rem 0;"></div>
 
   <!-- Global leagues section -->
   <h2 class="section-title">🌍 Grandes Ligas Mundiales</h2>
   <p style="color:#7a7a9a;font-size:0.85rem;margin:-0.5rem 0 1.5rem;">
-    Ver fútbol europeo de primer nivel, baloncesto NBA, béisbol MLB Grandes Ligas y MotoGP en vivo gratis hoy.
+    Fútbol europeo, baloncesto NBA, béisbol MLB, MotoGP y hockey NHL en vivo gratis hoy.
   </p>
 
-  <div class="match-grid" style="margin-bottom: 2rem;">
-    {globalLeagues.map((l) => {
-      const count = getActiveCount(l.slug);
-      return (
-        <a href={`/${l.slug}/`} class="match-card" style="text-decoration:none;">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div class="match-card__league" style="font-size: 0.95rem; font-weight: 700; color: var(--text);">
-              {l.emoji} {l.name}
-            </div>
-            {count > 0 ? (
-              <span class="match-card__live" style="font-size: 0.72rem;">{count} en vivo</span>
-            ) : (
-              <span style="font-size:0.72rem; color:var(--muted);">Programado</span>
-            )}
+  {globalLeagues.map((l) => {
+    const leagueMatches = getLeagueMatches(l.slug);
+    return (
+      <>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; margin-top:1.5rem;">
+          <h3 style="font-size:0.95rem; font-weight:700; color:var(--text); margin:0;">
+            {l.emoji} {l.name}
+          </h3>
+          <a href={`/${l.slug}/`} style="font-size:0.75rem; color:var(--accent); font-weight:600; text-decoration:none;">
+            {leagueMatches.length > 0 ? `${leagueMatches.length} en vivo →` : 'Ver todos →'}
+          </a>
+        </div>
+        <p style="font-size:0.78rem; color:var(--muted); margin:0 0 0.75rem;">{l.desc}</p>
+        {leagueMatches.length > 0 ? (
+          <div class="match-grid" style="margin-bottom:0.5rem;">
+            {leagueMatches.slice(0, 3).map((m) => (
+              <MatchCard match={m} />
+            ))}
           </div>
-          <div class="match-card__teams" style="font-size: 0.8rem; font-weight: 400; color: var(--muted); margin-top: 0.5rem; line-height: 1.4;">
-            {l.desc}
+        ) : (
+          <div style="font-size:0.78rem; color:var(--muted); padding:0.75rem; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:0.5rem;">
+            📅 No hay partidos programados hoy. <a href={`/${l.slug}/`} style="color:var(--accent)">Ver calendario →</a>
           </div>
-          <div class="match-card__live" style="margin-top:0.75rem; font-size:0.75rem;">Ver partidos →</div>
-        </a>
-      );
-    })}
+        )}
+      </>
+    );
+  })}
+
+  <!-- Brand access -->
+  <div style="border-top:1px solid var(--border); margin:2.5rem 0;"></div>
+  <h2 class="section-title">⚡ Accesos Rápidos</h2>
+  <div class="match-grid" style="margin-bottom:2rem;">
+    {[
+      { href: '/futbol-libre/',          label: '⚽ Fútbol Libre',          sub: 'Todos los partidos de fútbol gratis' },
+      { href: '/roja-directa-en-vivo/',  label: '🔴 Roja Directa en Vivo', sub: 'Todos los deportes en directo' },
+      { href: '/pirlo-tv/',              label: '⚡ Pirlo TV',              sub: 'pirlotv en vivo gratis' },
+      { href: '/tarjeta-roja/',          label: '🟥 Tarjeta Roja TV',      sub: 'tarjeta roja en vivo' },
+    ].map((b) => (
+      <a href={b.href} class="match-card" style="text-decoration:none;">
+        <div class="match-card__teams" style="font-size:0.95rem;">{b.label}</div>
+        <div class="match-card__league">{b.sub}</div>
+        <div class="match-card__live" style="margin-top:0.25rem;">Acceder →</div>
+      </a>
+    ))}
   </div>
 </Base>

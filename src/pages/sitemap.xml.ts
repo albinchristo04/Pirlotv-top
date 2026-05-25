@@ -9,29 +9,45 @@ export async function GET() {
   const now = new Date().toISOString().split('T')[0];
 
   const staticPages = [
+    // Core pages
     { url: '/', priority: '1.0', changefreq: 'hourly' },
     { url: '/hub/', priority: '1.0', changefreq: 'hourly' },
+
+    // Brand pages (high priority for Bing)
     { url: '/pirlo-tv/', priority: '1.0', changefreq: 'daily' },
+    { url: '/futbol-libre/', priority: '1.0', changefreq: 'daily' },
+    { url: '/roja-directa-en-vivo/', priority: '1.0', changefreq: 'daily' },
+    { url: '/futbol-en-vivo/', priority: '1.0', changefreq: 'daily' },
     { url: '/tarjeta-roja/', priority: '0.9', changefreq: 'daily' },
     { url: '/roja-directa-pirlo-tv/', priority: '0.9', changefreq: 'daily' },
     { url: '/tarjeta-roja-pirlo-tv/', priority: '0.9', changefreq: 'daily' },
+
+    // Sport pages
     { url: '/futbol/', priority: '0.8', changefreq: 'daily' },
     { url: '/mlb/', priority: '0.8', changefreq: 'daily' },
     { url: '/nba/', priority: '0.8', changefreq: 'daily' },
     { url: '/nhl/', priority: '0.8', changefreq: 'daily' },
     { url: '/beisbol/', priority: '0.8', changefreq: 'daily' },
     { url: '/motogp/', priority: '0.8', changefreq: 'daily' },
-    { url: '/champions-league/', priority: '0.8', changefreq: 'daily' },
-    { url: '/liga-mx/', priority: '0.8', changefreq: 'daily' },
-    { url: '/futbol-argentino/', priority: '0.8', changefreq: 'daily' },
-    { url: '/brasileirao/', priority: '0.8', changefreq: 'daily' },
-    { url: '/liga-chilena/', priority: '0.8', changefreq: 'daily' },
-    { url: '/liga-ecuador/', priority: '0.8', changefreq: 'daily' },
+
+    // LATAM leagues (high priority for Bing LATAM)
+    { url: '/liga-mx/', priority: '0.9', changefreq: 'daily' },
+    { url: '/futbol-argentino/', priority: '0.9', changefreq: 'daily' },
+    { url: '/brasileirao/', priority: '0.9', changefreq: 'daily' },
+    { url: '/liga-chilena/', priority: '0.9', changefreq: 'daily' },
+    { url: '/liga-ecuador/', priority: '0.9', changefreq: 'daily' },
+    { url: '/copa-libertadores/', priority: '0.9', changefreq: 'daily' },
+    { url: '/copa-sudamericana/', priority: '0.8', changefreq: 'daily' },
+    { url: '/liga-betplay/', priority: '0.9', changefreq: 'daily' },
+    { url: '/liga-peru/', priority: '0.9', changefreq: 'daily' },
+    { url: '/futbol-uruguayo/', priority: '0.8', changefreq: 'daily' },
+    { url: '/futbol-paraguayo/', priority: '0.8', changefreq: 'daily' },
+
+    // European / Global leagues
     { url: '/laliga/', priority: '0.8', changefreq: 'daily' },
     { url: '/premier-league/', priority: '0.8', changefreq: 'daily' },
+    { url: '/champions-league/', priority: '0.8', changefreq: 'daily' },
     { url: '/mls/', priority: '0.8', changefreq: 'daily' },
-    { url: '/copa-libertadores/', priority: '0.8', changefreq: 'daily' },
-    { url: '/copa-sudamericana/', priority: '0.7', changefreq: 'daily' },
   ];
 
   const matchUrls = matches.flatMap((m) => [
