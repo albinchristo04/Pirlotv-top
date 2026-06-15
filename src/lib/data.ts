@@ -296,10 +296,10 @@ export async function getMatches(): Promise<Match[]> {
     });
 
     _cache = processed;
-    console.log(`[data] fetched and parsed ${_cache.length} matches from sportsonline API`);
+    console.log(`[data] fetched and parsed ${_cache.length} matches from wc.ppvtv.top API`);
     return _cache;
   } catch (e) {
-    console.warn('[data] failed to fetch from sportsonline API, returning empty list:', e);
+    console.warn('[data] failed to fetch from wc.ppvtv.top API, returning empty list:', e);
     return [];
   }
 }
