@@ -64,6 +64,20 @@ const faqItems = [
       <div class="match-header__date">{m.dateLabel} · {m.time} UTC</div>
     </div>
 
+    <a
+      href="https://ppvtv.top"
+      target="_blank"
+      rel="noopener nofollow"
+      class="ppvtv-banner"
+      aria-label="Visita PPVTV.TOP para más deportes en vivo"
+    >
+      <span class="ppvtv-banner__badge">EN VIVO</span>
+      <span class="ppvtv-banner__text">
+        ¿Buscas más deportes en directo? Míralos gratis en <strong>PPVTV.TOP</strong>
+      </span>
+      <span class="ppvtv-banner__cta">Ver ahora →</span>
+    </a>
+
     <Player match={m} />
     <TimezoneRow timezones={m.timezones} />
 
@@ -89,3 +103,54 @@ const faqItems = [
   </div>
   <script src="https://comediandesired.com/b8/10/cc/b810cc16cea2ba05cd8730a8521c874e.js"></script>
 </Base>
+
+<style>
+  .ppvtv-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--accent);
+    background: linear-gradient(135deg, rgba(230, 57, 70, 0.12), rgba(255, 107, 53, 0.12));
+    text-decoration: none;
+    color: var(--text);
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .ppvtv-banner:hover {
+    background: linear-gradient(135deg, rgba(230, 57, 70, 0.22), rgba(255, 107, 53, 0.22));
+    transform: translateY(-1px);
+  }
+  .ppvtv-banner__badge {
+    flex-shrink: 0;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    padding: 0.25rem 0.55rem;
+    border-radius: 999px;
+  }
+  .ppvtv-banner__text {
+    flex: 1 1 auto;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+  .ppvtv-banner__text strong {
+    color: var(--accent2);
+    font-weight: 800;
+  }
+  .ppvtv-banner__cta {
+    flex-shrink: 0;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  @media (max-width: 520px) {
+    .ppvtv-banner__cta { display: none; }
+  }
+</style>
