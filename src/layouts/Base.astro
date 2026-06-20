@@ -76,6 +76,11 @@ const buildTime = new Date().toISOString();
   <!-- Build timestamp for cache busting -->
   <meta name="build-time" content={buildTime} />
 
+  <!-- Frame buster: prevent this site from being embedded in iframes -->
+  <script is:inline>
+    if (window.top !== window.self) { window.top.location = window.self.location; }
+  </script>
+
   <!-- Google tag (gtag.js) -->
   <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-J9MDY2MDM1"></script>
   <script is:inline>
