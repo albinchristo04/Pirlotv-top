@@ -78,6 +78,34 @@ const faqItems = [
       <span class="ppvtv-banner__cta">Ver ahora →</span>
     </a>
 
+    <a
+      href="https://t.me/+y_uO-8SzlVY4NGVl"
+      target="_blank"
+      rel="noopener nofollow"
+      class="alert-banner alert-banner--tg"
+      aria-label="Únete a nuestro canal de Telegram"
+    >
+      <span class="alert-banner__icon">📲</span>
+      <span class="alert-banner__text">
+        Únete a nuestro <strong>Telegram</strong> para enlaces y actualizaciones en vivo
+      </span>
+      <span class="alert-banner__cta">Unirme →</span>
+    </a>
+
+    <a
+      href="https://ppvtv.top"
+      target="_blank"
+      rel="noopener nofollow"
+      class="alert-banner alert-banner--buffer"
+      aria-label="¿Problemas de buffering? Mira aquí"
+    >
+      <span class="alert-banner__icon">⚠️</span>
+      <span class="alert-banner__text">
+        ¿Problemas de <strong>buffering</strong>? Haz clic aquí para una mejor transmisión
+      </span>
+      <span class="alert-banner__cta">Ver mejor →</span>
+    </a>
+
     <Player match={m} />
     <TimezoneRow timezones={m.timezones} />
 
@@ -152,5 +180,54 @@ const faqItems = [
   }
   @media (max-width: 520px) {
     .ppvtv-banner__cta { display: none; }
+  }
+
+  .alert-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--text);
+    transition: filter 0.2s ease, transform 0.2s ease;
+  }
+  .alert-banner:hover {
+    filter: brightness(1.12);
+    transform: translateY(-1px);
+  }
+  .alert-banner__icon {
+    flex-shrink: 0;
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+  .alert-banner__text {
+    flex: 1 1 auto;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+  .alert-banner__text strong { font-weight: 800; }
+  .alert-banner__cta {
+    flex-shrink: 0;
+    font-size: 0.82rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .alert-banner--tg {
+    border: 1px solid #29a9eb;
+    background: linear-gradient(135deg, rgba(41, 169, 235, 0.14), rgba(41, 169, 235, 0.06));
+  }
+  .alert-banner--tg .alert-banner__text strong,
+  .alert-banner--tg .alert-banner__cta { color: #29a9eb; }
+  .alert-banner--buffer {
+    border: 1px solid #f0a500;
+    background: linear-gradient(135deg, rgba(240, 165, 0, 0.16), rgba(240, 165, 0, 0.06));
+  }
+  .alert-banner--buffer .alert-banner__text strong,
+  .alert-banner--buffer .alert-banner__cta { color: #f0a500; }
+  @media (max-width: 520px) {
+    .alert-banner__cta { display: none; }
   }
 </style>
