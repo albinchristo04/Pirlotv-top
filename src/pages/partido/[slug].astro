@@ -106,6 +106,19 @@ const faqItems = [
       <span class="alert-banner__cta">Ver mejor →</span>
     </a>
 
+    <div class="banner-ad" aria-hidden="true">
+      <script is:inline>
+        atOptions = {
+          'key' : '11060a6408ed16670a2c0a8753b59dd8',
+          'format' : 'iframe',
+          'height' : 250,
+          'width' : 300,
+          'params' : {}
+        };
+      </script>
+      <script is:inline src="https://comediandesired.com/11060a6408ed16670a2c0a8753b59dd8/invoke.js"></script>
+    </div>
+
     <Player match={m} />
     <TimezoneRow timezones={m.timezones} />
 
@@ -229,5 +242,14 @@ const faqItems = [
   .alert-banner--buffer .alert-banner__cta { color: #f0a500; }
   @media (max-width: 520px) {
     .alert-banner__cta { display: none; }
+  }
+
+  .banner-ad {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 250px;
+    margin-bottom: 1rem;
+    overflow: hidden;
   }
 </style>
