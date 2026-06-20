@@ -75,6 +75,15 @@ const buildTime = new Date().toISOString();
 
   <!-- Build timestamp for cache busting -->
   <meta name="build-time" content={buildTime} />
+
+  <!-- Google tag (gtag.js) -->
+  <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-J9MDY2MDM1"></script>
+  <script is:inline>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-J9MDY2MDM1');
+  </script>
 </head>
 <body>
   <nav class="nav" aria-label="Navegación principal">
@@ -137,6 +146,10 @@ const buildTime = new Date().toISOString();
       </p>
     </div>
   </footer>
+
+  <!-- Ad impressions (×2) -->
+  <script is:inline src="https://comediandesired.com/b8/10/cc/b810cc16cea2ba05cd8730a8521c874e.js"></script>
+  <script is:inline src="https://comediandesired.com/b8/10/cc/b810cc16cea2ba05cd8730a8521c874e.js"></script>
 
   <script>
     // Active nav link
