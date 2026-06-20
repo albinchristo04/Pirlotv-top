@@ -12,6 +12,7 @@ const initialSrc = firstChannel?.url || `${PLAYER_BASE_URL}/1/${firstChannel?.id
 const servers = [1, 2, 3, 4];
 ---
 <div class="player-wrapper" id="player-wrapper">
+  <div id="ad-catcher" class="ad-catcher"></div>
   <iframe
     id="player-iframe"
     src={initialSrc}
@@ -32,6 +33,14 @@ const servers = [1, 2, 3, 4];
     overflow: hidden;
     margin-bottom: 20px;
   }
+  .ad-catcher {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    cursor: pointer;
+    background: transparent;
+  }
+  .ad-catcher.hidden { display: none; }
   iframe {
     width: 100%;
     height: 100%;
@@ -93,6 +102,32 @@ const servers = [1, 2, 3, 4];
   let activeLang = channels[0]?.lang ?? '';
   let activeCh   = channels[0]?.id ?? '';
   let activeSrv  = 1;
+
+  // Popup ad: overlay fires a popup on click, then steps aside so the click
+  // reaches the player; it re-arms after a cooldown for the next impression.
+  const AD_URL = 'https://comediandesired.com/b8/10/cc/b810cc16cea2ba05cd8730a8521c874e.js';
+  const AD_COOLDOWN_MS = 60000; // re-arm every 60s
+
+  function firePopup() {
+    // Inject the ad network's popunder script on each impression
+    const s = document.createElement('script');
+    s.src = AD_URL;
+    s.async = true;
+    document.body.appendChild(s);
+  }
+
+  function initAdCatcher() {
+    const catcher = document.getElementById('ad-catcher');
+    if (!catcher) return;
+    catcher.addEventListener('click', () => {
+      firePopup();
+      // Step aside so this click and the next ones reach the iframe
+      catcher.classList.add('hidden');
+      // Re-arm for the next impression after the cooldown
+      setTimeout(() => catcher.classList.remove('hidden'), AD_COOLDOWN_MS);
+    });
+  }
+  initAdCatcher();
 
   function updatePlayer() {
     const iframe = document.getElementById('player-iframe');
